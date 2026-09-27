@@ -92,17 +92,17 @@
           <text class="t-lab" x="34" y="36" transform="rotate(-90 34 36)" text-anchor="end">CORTISOL</text>
           <g class="t-lab"><text x="50" y="372">WAKE</text><text x="330" y="372" text-anchor="middle">MIDDAY</text><text x="610" y="372" text-anchor="end">BED</text></g>
           <g class="cur" id="cur">
-            <g class="fx-fade" style="--d:.2s"><path id="curFill" fill="url(#gFill)" d="M 50 340 C 76.5 109.7, 118.1 50, 174.9 54.2 C 307.3 71.3, 458.6 254.7, 610 314.5 L 610 340 L 50 340 Z"/></g>
-            <path class="ghost" id="ghost" d="M 50 340 C 76.5 109.7, 118.1 50, 174.9 54.2 C 307.3 71.3, 458.6 254.7, 610 314.5" fill="none" stroke="#B7D3AE" stroke-opacity=".6" stroke-width="2" stroke-dasharray="4 7" opacity="0"/>
-            <text class="ghost t-ser t-it" id="ghostLabel" x="190" y="40" font-size="19" fill="#B7D3AE" opacity="0">normal curve</text>
-            <path class="cur-line draw" id="curLine" pathLength="1" style="--d:.2s;--dur:1.4s" d="M 50 340 C 76.5 109.7, 118.1 50, 174.9 54.2 C 307.3 71.3, 458.6 254.7, 610 314.5" fill="none" stroke-width="5.5" stroke-linecap="round" filter="url(#glow)"/>
-            <g class="fx-pop" style="--d:1.3s"><circle class="end-dot" id="endDot" cx="610" cy="314.5" r="8" fill="#111D10" stroke-width="4"/></g>
+            <g class="fx-fade" style="--d:.2s"><path id="curFill" fill="url(#gFill)" d="M 50 190 C 57 128, 64 76, 74 70 C 170 76, 330 252, 610 318 L 610 340 L 50 340 Z"/></g>
+            <path class="ghost" id="ghost" d="M 50 190 C 57 128, 64 76, 74 70 C 170 76, 330 252, 610 318" fill="none" stroke="#B7D3AE" stroke-opacity=".6" stroke-width="2" stroke-dasharray="4 7" opacity="0"/>
+            <text class="ghost t-ser t-it" id="ghostLabel" x="150" y="40" font-size="19" fill="#B7D3AE" opacity="0">normal curve</text>
+            <path class="cur-line draw" id="curLine" pathLength="1" style="--d:.2s;--dur:1.4s" d="M 50 190 C 57 128, 64 76, 74 70 C 170 76, 330 252, 610 318" fill="none" stroke-width="5.5" stroke-linecap="round" filter="url(#glow)"/>
+            <g class="fx-pop" style="--d:1.3s"><circle class="end-dot" id="endDot" cx="610" cy="318" r="8" fill="#111D10" stroke-width="4"/></g>
           </g>
           <g class="overlay" id="overlay" opacity="0" fill="none" stroke-width="3.5" stroke-linecap="round" filter="url(#glow)">
-            <path d="M 50 340 C 76.5 109.7, 118.1 50, 174.9 54.2 C 307.3 71.3, 458.6 254.7, 610 314.5" stroke="#B7D3AE"/>
-            <path d="M 50 340 C 68.9 152.4, 99.2 96.9, 174.9 92.6 C 326.2 88.4, 477.6 113.9, 610 143.8" stroke="#F2B46E"/>
-            <path d="M 50 340 C 61.4 263.3, 80.3 237.6, 118.1 237.6 C 288.4 237.6, 458.6 250.4, 610 267.5" stroke="#EE8B75"/>
-            <path d="M 50 340 C 80 322.2, 120 308.8, 175 306.5 C 310 302.1, 460 299.8, 610 305.4" stroke="#C9CDC2"/>
+            <path d="M 50 190 C 57 128, 64 76, 74 70 C 170 76, 330 252, 610 318" stroke="#B7D3AE"/>
+            <path d="M 50 150 C 57 104, 64 64, 74 60 C 230 60, 430 88, 610 118" stroke="#F2B46E"/>
+            <path d="M 50 262 C 57 244, 64 229, 74 226 C 230 226, 430 236, 610 250" stroke="#EE8B75"/>
+            <path d="M 50 300 C 57 296, 64 291, 74 290 C 230 288, 430 288, 610 292" stroke="#C9CDC2"/>
           </g>
         </svg>
       </div>
@@ -177,10 +177,10 @@
 <script>
 (function () {
   var S = [
-    { name: 'Normal', c: '#B7D3AE', d: 'M 50 340 C 76.5 109.7, 118.1 50, 174.9 54.2 C 307.3 71.3, 458.6 254.7, 610 314.5', end: 314.5 },
-    { name: 'Acute', c: '#F2B46E', d: 'M 50 340 C 68.9 152.4, 99.2 96.9, 174.9 92.6 C 326.2 88.4, 477.6 113.9, 610 143.8', end: 143.8 },
-    { name: 'Chronic', c: '#EE8B75', d: 'M 50 340 C 61.4 263.3, 80.3 237.6, 118.1 237.6 C 288.4 237.6, 458.6 250.4, 610 267.5', end: 267.5 },
-    { name: 'Exhaustion', c: '#C9CDC2', d: 'M 50 340 C 80 322.2, 120 308.8, 175 306.5 C 310 302.1, 460 299.8, 610 305.4', end: 305.4 }
+    { name: 'Normal', c: '#B7D3AE', d: 'M 50 190 C 57 128, 64 76, 74 70 C 170 76, 330 252, 610 318', end: 318 },
+    { name: 'Acute', c: '#F2B46E', d: 'M 50 150 C 57 104, 64 64, 74 60 C 230 60, 430 88, 610 118', end: 118 },
+    { name: 'Chronic', c: '#EE8B75', d: 'M 50 262 C 57 244, 64 229, 74 226 C 230 226, 430 236, 610 250', end: 250 },
+    { name: 'Exhaustion', c: '#C9CDC2', d: 'M 50 300 C 57 296, 64 291, 74 290 C 230 288, 430 288, 610 292', end: 292 }
   ];
   var $ = function (id) { return document.getElementById(id); };
   var stage = $('stage'), line = $('curLine'), fill = $('curFill'), dot = $('endDot');

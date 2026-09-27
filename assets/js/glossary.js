@@ -29,7 +29,7 @@ window.HX_GLOSSARY = [
   ['catabolism', 'Breaking tissue down for fuel.'],
   ['cytokines', 'Signalling molecules used by the immune system; some switch on inflammation.'],
   ['IL-1, IL-6, TNF', 'Inflammatory cytokines: signals the immune system uses to switch on inflammation.'],
-  ['leukocytes', 'White blood cells.'],
+  ['lymphocytes', 'White blood cells that coordinate immune responses, including T cells and B cells.'],
   ['eosinophils', 'A type of white blood cell involved in allergy and inflammation.'],
   ['neutrophils', 'The most common white blood cell, a first responder to infection.'],
   ['Vasodilation', 'Widening of the blood vessels.'],
