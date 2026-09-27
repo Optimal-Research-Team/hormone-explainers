@@ -5,15 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cortisol has a dose-dependent effect · Hormone Explainers</title>
 <meta name="description" content="Too little and too much cortisol both cause harm. The body needs a middle band. Chapter 01 of 08.">
+<link rel="canonical" href="https://optimal-research-team.github.io/hormone-explainers/01-dose-response.html">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Optimal · Hormone Explainers">
+<meta property="og:title" content="Cortisol has a dose-dependent effect · Hormone Explainers">
+<meta property="og:description" content="Too little and too much cortisol both cause harm. The body needs a middle band. Chapter 01 of 08.">
+<meta property="og:url" content="https://optimal-research-team.github.io/hormone-explainers/01-dose-response.html">
+<meta property="og:image" content="https://optimal-research-team.github.io/hormone-explainers/assets/og/01.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFFCF7">
 <link rel="icon" href="assets/img/symbol-green.png">
-<script>document.documentElement.classList.add('js');if(/[?&]still/.test(location.search))document.documentElement.classList.add('still')</script>
+<script>document.documentElement.classList.add('js');if(/[?&]still/.test(location.search))document.documentElement.classList.add('still');if(/[?&]og/.test(location.search))document.documentElement.classList.add('og')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Public+Sans:ital,wght@0,300..700;1,400..500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/site.css">
 <style>
-#doseSvg { cursor: ew-resize; touch-action: none; }
+#doseSvg { cursor: ew-resize; touch-action: pan-y; }
 #doseSvg:focus-visible { outline: none; }
 #doseSvg:focus-visible .mk-dot { stroke-width: 6; }
 .zband { transition: opacity .5s var(--ease); }
@@ -23,7 +34,7 @@
 .mk-tag rect { transition: fill .4s var(--ease); }
 .zlab { transition: fill .4s var(--ease); }
 .zlab.on { fill: var(--cream); }
-@media (max-width: 640px) { .zlab, .peak-l { display: none; } }
+@media (max-width: 640px) { .zlab, .peak-l, .mk-tag { display: none; } }
 </style>
 </head>
 <body data-chapter="1">
@@ -166,6 +177,7 @@
 
 <div id="end"></div>
 <div id="foot"></div>
+<script src="assets/js/glossary.js"></script>
 <script src="assets/js/site.js"></script>
 <script>
 (function () {
@@ -214,6 +226,7 @@
   svg.addEventListener('pointerdown', function (e) { dragging = true; glide++; svg.setPointerCapture(e.pointerId); place(toSvgX(e.clientX)); });
   svg.addEventListener('pointermove', function (e) { if (dragging) place(toSvgX(e.clientX)); });
   svg.addEventListener('pointerup', function () { dragging = false; });
+  svg.addEventListener('pointercancel', function () { dragging = false; });
   svg.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { e.preventDefault(); glide++; place(x + 24); }
     if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); glide++; place(x - 24); }

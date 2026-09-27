@@ -5,9 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The hormone cycle and its stop points · Hormone Explainers</title>
 <meta name="description" content="Hormones feed each other in a loop, with six places to interrupt it and the tools used at each. Chapter 06 of 08.">
+<link rel="canonical" href="https://optimal-research-team.github.io/hormone-explainers/06-cycle-stop-points.html">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Optimal · Hormone Explainers">
+<meta property="og:title" content="The hormone cycle and its stop points · Hormone Explainers">
+<meta property="og:description" content="Hormones feed each other in a loop, with six places to interrupt it and the tools used at each. Chapter 06 of 08.">
+<meta property="og:url" content="https://optimal-research-team.github.io/hormone-explainers/06-cycle-stop-points.html">
+<meta property="og:image" content="https://optimal-research-team.github.io/hormone-explainers/assets/og/06.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFFCF7">
 <link rel="icon" href="assets/img/symbol-green.png">
-<script>document.documentElement.classList.add('js');if(/[?&]still/.test(location.search))document.documentElement.classList.add('still')</script>
+<script>document.documentElement.classList.add('js');if(/[?&]still/.test(location.search))document.documentElement.classList.add('still');if(/[?&]og/.test(location.search))document.documentElement.classList.add('og')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Public+Sans:ital,wght@0,300..700;1,400..500&display=swap" rel="stylesheet">
@@ -172,6 +183,7 @@
 
 <div id="end"></div>
 <div id="foot"></div>
+<script src="assets/js/glossary.js"></script>
 <script src="assets/js/site.js"></script>
 <script>
 (function () {
@@ -182,7 +194,8 @@
   var arriveAt = [251, 318, 18, 61, 138, 198];
   var arcs = [].slice.call(ring.querySelectorAll('.arc'));
   var P = ['particle', 'glow', 'halo'].map($);
-  var a = 0, target = null, last = performance.now(), SPEED = 360 / 7200;
+  var a = 0, target = null, last = performance.now(), SPEED = 360 / 7200, onScreen = true;
+  HX.whileVisible(stage, function (v) { onScreen = v; });
 
   function draw() {
     var r = a * Math.PI / 180, x = CX + R * Math.cos(r), y = CY + R * Math.sin(r);
@@ -190,7 +203,7 @@
   }
   function frame(now) {
     var dt = Math.min(64, now - last); last = now;
-    if (target === null && !HX.reduce) { a = (a + dt * SPEED) % 360; draw(); }
+    if (target === null && !HX.reduce && onScreen) { a = (a + dt * SPEED) % 360; draw(); }
     requestAnimationFrame(frame);
   }
   function halt(i) {

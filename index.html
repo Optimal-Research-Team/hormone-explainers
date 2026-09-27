@@ -5,12 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hormone Explainers · Optimal</title>
 <meta name="description" content="Eight short, guided explainers on cortisol, sleep and the hormone system, from Optimal.">
-<meta name="theme-color" content="#111D10">
+<link rel="canonical" href="https://optimal-research-team.github.io/hormone-explainers/">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Optimal · Hormone Explainers">
 <meta property="og:title" content="Hormone Explainers · Optimal">
-<meta property="og:description" content="Eight short, guided explainers on cortisol, sleep and the hormone system.">
-<meta property="og:image" content="assets/img/canopy-wide.jpg">
+<meta property="og:description" content="Eight short, guided explainers on cortisol, sleep and the hormone system, from Optimal.">
+<meta property="og:url" content="https://optimal-research-team.github.io/hormone-explainers/">
+<meta property="og:image" content="https://optimal-research-team.github.io/hormone-explainers/assets/og/home.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#111D10">
 <link rel="icon" href="assets/img/symbol-green.png">
-<script>document.documentElement.classList.add('js');if(/[?&]still/.test(location.search))document.documentElement.classList.add('still')</script>
+<script>document.documentElement.classList.add('js');if(/[?&]still/.test(location.search))document.documentElement.classList.add('still');if(/[?&]og/.test(location.search))document.documentElement.classList.add('og')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Public+Sans:ital,wght@0,300..700;1,400..500&display=swap" rel="stylesheet">
@@ -19,6 +27,7 @@
 /* ---------- day hero ---------- */
 .dh { position: relative; isolation: isolate; overflow: hidden; margin-top: -74px; min-height: max(700px, min(100vh, 940px)); display: flex; flex-direction: column; color: var(--cream); background: linear-gradient(180deg, #0C150B 0%, #111D10 55%, #0F1A0D 100%); }
 .dh-bg { position: absolute; inset: 0; z-index: -3; }
+.dh-bg picture { display: contents; }
 .dh-bg img { width: 100%; height: 100%; object-fit: cover; opacity: .2; filter: saturate(.45) brightness(.85); transform: scale(1.06); animation: drift 40s ease-in-out infinite alternate; }
 @keyframes drift { to { transform: scale(1.14) translate(-1.5%, 1%); } }
 .dh-sky { position: absolute; inset: 0; z-index: -2; background: radial-gradient(55% 60% at var(--sx, 20%) 26%, var(--sky, rgba(242, 180, 110, .35)) 0%, transparent 70%); transition: background .2s linear; }
@@ -41,6 +50,7 @@
 .m-mel b { background: linear-gradient(90deg, #8198E0, #C1CCF3); box-shadow: 0 0 12px rgba(160, 178, 240, .55); }
 .dh-cap { margin: 14px 0 0; font-size: 14px; line-height: 1.5; color: rgba(255, 252, 247, .85); min-height: 4.4em; transition: opacity .35s var(--ease); }
 .dh-chart { position: relative; width: 100%; margin-top: auto; height: clamp(190px, 30vh, 300px); cursor: ew-resize; touch-action: pan-y; }
+.dh-chart:focus-visible { outline: 2px solid rgba(255, 252, 247, .6); outline-offset: -6px; border-radius: 10px; }
 .dh-chart svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .dh-cursor { position: absolute; top: 0; bottom: 34px; width: 0; left: 20%; pointer-events: none; }
 .dh-cursor::before { content: ""; position: absolute; top: 0; bottom: 0; left: -.5px; width: 1px; background: linear-gradient(180deg, transparent, rgba(255, 252, 247, .6) 30%, rgba(255, 252, 247, .6)); }
@@ -125,7 +135,7 @@
 /* ---------- closing band ---------- */
 .band-wrap { max-width: var(--maxw); margin: clamp(80px, 11vw, 140px) auto 0; padding: 0 var(--pad); }
 .band { position: relative; overflow: hidden; isolation: isolate; border-radius: var(--r-xl); padding: clamp(40px, 7vw, 96px) clamp(26px, 6vw, 80px); display: grid; grid-template-columns: minmax(0, 1.2fr) auto; gap: 28px; align-items: end; background: var(--forest-deep); box-shadow: var(--shadow-3); }
-.band::before { content: ""; position: absolute; inset: 0; z-index: -2; background: url("assets/img/canopy-wide.jpg") center / cover; }
+.band::before { content: ""; position: absolute; inset: 0; z-index: -2; background: url("assets/img/canopy-wide.jpg") center / cover; background-image: image-set(url("assets/img/canopy-wide.webp") type("image/webp"), url("assets/img/canopy-wide.jpg") type("image/jpeg")); }
 .band::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(17, 28, 14, .94) 0%, rgba(17, 28, 14, .78) 50%, rgba(17, 28, 14, .35) 100%); }
 .band .eyebrow { color: var(--sage-2); }
 .band .h2 { color: var(--cream); font-size: clamp(2.4rem, 1.4rem + 3vw, 4.4rem); }
@@ -156,7 +166,7 @@
 
 <main>
   <section class="dh" id="dh" aria-label="Introduction">
-    <div class="dh-bg"><img src="assets/img/canopy-wide.jpg" alt=""></div>
+    <div class="dh-bg"><picture><source srcset="assets/img/canopy-hero.webp" type="image/webp"><img src="assets/img/canopy-wide.jpg" alt="" decoding="async" fetchpriority="high"></picture></div>
     <div class="dh-sky" id="sky"></div>
     <div class="dh-inner">
       <div class="on-dark">
@@ -167,6 +177,7 @@
           <a class="btn btn-cream" href="01-dose-response.html">Start with chapter 01<svg class="go" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
           <a class="btn btn-glass" href="#series">Browse the series</a>
         </div>
+        <div id="resume" class="reveal" style="--i:4" hidden></div>
       </div>
       <div class="dh-read reveal" style="--i:3" aria-live="polite">
         <span class="label">Illustrative 24-hour rhythm</span>
@@ -179,7 +190,7 @@
         <span class="dh-hint"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M5.5 5.5 3 8l2.5 2.5M10.5 5.5 13 8l-2.5 2.5"/></svg>Move across the chart to scrub through the day</span>
       </div>
     </div>
-    <div class="dh-chart" id="dhChart" role="img" aria-label="Illustrative 24-hour curves: cortisol peaks after waking and falls through the day; melatonin rises in the evening and peaks overnight.">
+    <div class="dh-chart" id="dhChart" tabindex="0" role="slider" aria-label="Time of day on the illustrative 24-hour rhythm. Cortisol peaks after waking and falls through the day; melatonin rises in the evening and peaks overnight." aria-valuemin="0" aria-valuemax="24" aria-valuenow="7" aria-valuetext="07:10, morning">
       <svg viewBox="0 0 1440 300" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <linearGradient id="gC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0B26A" stop-opacity=".38"/><stop offset="1" stop-color="#F0B26A" stop-opacity="0"/></linearGradient>
@@ -480,6 +491,8 @@
     $('rCv').textContent = Math.round(c * 100) + '%'; $('rMv').textContent = Math.round(m * 100) + '%';
     var hh = Math.floor(h) % 24, mm = Math.floor((h % 1) * 6) * 10;
     $('rTime').textContent = (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm;
+    chart.setAttribute('aria-valuenow', hh);
+    chart.setAttribute('aria-valuetext', $('rTime').textContent + ', ' + ($('rPhase').textContent || '').toLowerCase());
     dh.style.setProperty('--sx', (px * 100).toFixed(1) + '%');
     dh.style.setProperty('--sky', skyAt(h));
     var night = h >= 20.5 || h < 6.2;
@@ -500,6 +513,13 @@
   chart.addEventListener('pointermove', function (e) { if (e.pointerType === 'mouse' || e.buttons) scrub(e); });
   chart.addEventListener('pointerdown', scrub);
   chart.addEventListener('pointerleave', function () { resumeAt = performance.now() + 1500; });
+  chart.addEventListener('keydown', function (e) {
+    var d = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? .5 : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -.5 : 0;
+    if (!d) return;
+    e.preventDefault(); auto = false; dh.classList.add('touched');
+    hour = hour + d; if (hour >= 30) hour -= 24; if (hour < 6) hour += 24;
+    render(hour); resumeAt = performance.now() + 5000;
+  });
   window.addEventListener('resize', function () { render(hour); });
   render(hour);
   if (HX.reduce) return;

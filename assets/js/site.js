@@ -4,6 +4,8 @@
 (function () {
   'use strict';
 
+  var SITE_URL = 'https://optimal-research-team.github.io/hormone-explainers/';
+
   var CHAPTERS = [
     { n: 1, file: '01-dose-response.html', title: 'Cortisol has a dose-dependent effect', tag: 'The basics',
       blurb: 'Too little and too much both cause harm. The body needs a middle band.' },
@@ -23,12 +25,20 @@
       blurb: 'Build from the base: sleep and circadian rhythm come before supplements.' }
   ];
 
+  /* Optional chapter cover photographs (see IMAGE_PROMPTS.md). Add a path to switch one on;
+     it appears in that chapter's header and on the "Up next" card that leads to it. */
+  var COVERS = {
+    // 1: 'assets/img/chapters/01.jpg',
+  };
+
   var params = new URLSearchParams(window.location.search);
   var still = params.has('still');
   var reduce = still || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var touch = window.matchMedia('(hover: none)').matches;
   var body = document.body;
   var cur = parseInt(body.getAttribute('data-chapter') || '0', 10);
   var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  var abs = function (p) { return new URL(p, window.location.href).href; };
 
   var I = {
     prev: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg>',
@@ -37,8 +47,27 @@
     back: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8h-11M7 3.5 2.5 8 7 12.5"/></svg>',
     grid: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1.4"/><rect x="9" y="2" width="5" height="5" rx="1.4"/><rect x="2" y="9" width="5" height="5" rx="1.4"/><rect x="9" y="9" width="5" height="5" rx="1.4"/></svg>',
     present: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1.8" y="2.5" width="12.4" height="8.5" rx="1.6"/><path d="M8 11v2.5M5.5 13.5h5"/><path d="M6.8 5.2v3.1L9.3 6.75z" fill="currentColor"/></svg>',
-    close: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>'
+    close: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+    check: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.5 3 3 6-7"/></svg>',
+    share: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10V2.5M5 5.5l3-3 3 3"/><path d="M3.5 8.5v4a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-4"/></svg>',
+    resume: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8A5 5 0 1 1 8 3h2.5M9 1.5 10.5 3 9 4.5"/></svg>'
   };
+
+  /* ---------- local progress (this device only; no personal data) ---------- */
+  var store = {
+    get: function (k, d) { try { var v = localStorage.getItem('hx:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set: function (k, v) { if (still) return; try { localStorage.setItem('hx:' + k, JSON.stringify(v)); } catch (e) {} }
+  };
+  var seen = store.get('seen', []), done = store.get('done', []);
+  if (cur && seen.indexOf(cur) < 0) { seen.push(cur); store.set('seen', seen); }
+  function status(n) { return done.indexOf(n) > -1 ? 'done' : seen.indexOf(n) > -1 ? 'seen' : ''; }
+
+  /* ---------- skip link ---------- */
+  if (document.querySelector('.story')) {
+    var skip = document.createElement('a');
+    skip.className = 'skip'; skip.href = '#story'; skip.textContent = 'Skip to the story';
+    body.insertBefore(skip, body.firstChild);
+  }
 
   /* ---------- nav ---------- */
   var navMount = document.getElementById('nav');
@@ -55,12 +84,13 @@
             ' aria-label="Chapter ' + pad(c.n) + ': ' + c.title + '"><span class="tip">' + pad(c.n) + ' · ' + c.title + '</span></a>';
         }).join('') + '</nav></div>';
     }
+    var menuBtn = '<button class="nav-cta' + (cur ? '' : ' nav-ghost') + '" type="button" data-menu aria-expanded="false" aria-controls="cmenu">' + I.grid + '<span>' + (cur ? 'All chapters' : 'Chapters') + '</span></button>';
     var actions = cur
       ? '<a class="icon-btn" href="' + (prev ? prev.file : 'index.html') + '" aria-label="Previous chapter">' + I.prev + '</a>' +
         '<a class="icon-btn" href="' + (next ? next.file : 'index.html') + '" aria-label="Next chapter">' + I.next + '</a>' +
         (hasStory ? '<button class="nav-cta nav-ghost" type="button" data-present>' + I.present + '<span>Present</span></button>' : '') +
-        '<a class="nav-cta" href="index.html#series">' + I.grid + '<span>All chapters</span></a>'
-      : '<a class="nav-cta" href="' + CHAPTERS[0].file + '"><span>Start chapter 01</span>' + I.arrow + '</a>';
+        menuBtn
+      : menuBtn + '<a class="nav-cta" href="' + CHAPTERS[0].file + '"><span>Start chapter 01</span>' + I.arrow + '</a>';
     navMount.innerHTML =
       '<div class="nav">' +
         '<a class="nav-brand" href="index.html" aria-label="Hormone explainers — home">' +
@@ -71,12 +101,43 @@
       '</div>';
   }
 
+  /* ---------- chapter menu ---------- */
+  var menu = document.createElement('div');
+  menu.className = 'cmenu'; menu.id = 'cmenu'; menu.hidden = true;
+  menu.setAttribute('role', 'dialog'); menu.setAttribute('aria-label', 'Chapters');
+  var viewed = CHAPTERS.filter(function (c) { return status(c.n); }).length;
+  menu.innerHTML =
+    '<div class="cmenu-head"><span class="label">Hormone explainers · 8 chapters</span><a href="index.html">Overview</a></div>' +
+    '<ol class="cmenu-list">' + CHAPTERS.map(function (c) {
+      var st = c.n === cur ? 'current' : status(c.n);
+      var badge = st === 'current' ? '<span class="cm-s now">Reading</span>'
+        : st === 'done' ? '<span class="cm-s ok" title="Completed">' + I.check + '</span>'
+        : st === 'seen' ? '<span class="cm-s seen" title="Viewed"></span>' : '';
+      return '<li><a class="cm' + (c.n === cur ? ' is-current' : '') + '" href="' + c.file + '"' + (c.n === cur ? ' aria-current="page"' : '') + '>' +
+        '<span class="cm-n">' + pad(c.n) + '</span><span class="cm-t"><b>' + c.title + '</b><small>' + c.tag + '</small></span>' + badge + '</a></li>';
+    }).join('') + '</ol>' +
+    '<div class="cmenu-foot"><span>' + (viewed ? viewed + ' of 8 viewed on this device' : 'Start with chapter 01') + '</span>' +
+    (hasStory ? '<button type="button" class="cmenu-present" data-present>' + I.present + 'Present this chapter</button>' : '') + '</div>';
+  body.appendChild(menu);
+  var menuBtns = [].slice.call(document.querySelectorAll('[data-menu]'));
+  function setMenu(open) {
+    menu.hidden = !open;
+    if (open) { void menu.offsetWidth; menu.classList.add('open'); } else menu.classList.remove('open');
+    menuBtns.forEach(function (b) { b.setAttribute('aria-expanded', open ? 'true' : 'false'); });
+    if (open) { var a = menu.querySelector('.is-current') || menu.querySelector('.cm'); if (a) a.focus({ preventScroll: true }); }
+  }
+  menuBtns.forEach(function (b) { b.addEventListener('click', function (e) { e.stopPropagation(); setMenu(menu.hidden); }); });
+  document.addEventListener('click', function (e) { if (!menu.hidden && !menu.contains(e.target)) setMenu(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !menu.hidden) { e.preventDefault(); setMenu(false); if (menuBtns[0]) menuBtns[0].focus(); } });
+  menu.querySelectorAll('[data-present]').forEach(function (b) { b.addEventListener('click', function () { setMenu(false); }); });
+
   /* ---------- chapter end + footer ---------- */
   var endMount = document.getElementById('end');
   if (endMount && cur) {
     var nx = CHAPTERS[cur], pv = CHAPTERS[cur - 2];
+    var cover = nx && COVERS[nx.n] ? ' style="--cover:url(\'' + abs(COVERS[nx.n]) + '\')"' : '';
     var card = nx
-      ? '<a class="next-card" href="' + nx.file + '">' +
+      ? '<a class="next-card" href="' + nx.file + '"' + cover + '>' +
           '<div class="next-copy"><span class="label">Up next · Chapter ' + pad(nx.n) + ' · ' + nx.tag + '</span>' +
           '<span class="next-title">' + nx.title + '</span><span class="next-blurb">' + nx.blurb + '</span></div>' +
           '<span class="next-go" aria-hidden="true">' + I.arrow + '</span><span class="next-num" aria-hidden="true">' + pad(nx.n) + '</span></a>'
@@ -88,7 +149,8 @@
       '<div class="end-row">' +
         (pv ? '<a class="end-link" href="' + pv.file + '">' + I.back + 'Previous: ' + pv.title + '</a>'
             : '<a class="end-link" href="index.html">' + I.back + 'All chapters</a>') +
-        '<span class="kbd-hint"><kbd>←</kbd><kbd>→</kbd> between chapters</span>' +
+        '<span class="end-tools"><button class="end-link share" type="button" data-share>' + I.share + '<span>Share this chapter</span></button>' +
+        '<span class="kbd-hint"><kbd>←</kbd><kbd>→</kbd> between chapters</span></span>' +
       '</div></section>';
   }
   var footMount = document.getElementById('foot');
@@ -97,13 +159,61 @@
     footMount.innerHTML = '<footer class="foot"><div class="foot-inner">' +
       '<img src="assets/img/optimal-wordmark-green.png" alt="Optimal" width="86" height="20">' +
       '<p>' + note + ' For education only, not a substitute for individual medical advice.</p>' +
+      '<a class="foot-link" href="https://www.beoptimal.ca" rel="noopener">beoptimal.ca</a>' +
       '<span>© Optimal Health</span></div></footer>';
+  }
+
+  /* ---------- share ---------- */
+  document.querySelectorAll('[data-share]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var file = cur ? CHAPTERS[cur - 1].file : '';
+      var url = SITE_URL + file, label = b.querySelector('span');
+      if (navigator.share && touch) { navigator.share({ title: document.title, url: url }).catch(function () {}); return; }
+      var done = function () { label.textContent = 'Link copied'; b.classList.add('copied'); setTimeout(function () { label.textContent = 'Share this chapter'; b.classList.remove('copied'); }, 2200); };
+      if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () { window.prompt('Copy this link', url); });
+      else window.prompt('Copy this link', url);
+    });
+  });
+
+  /* ---------- chapter cover photograph (optional) ---------- */
+  var head = document.querySelector('.chapter-head');
+  if (head && cur && COVERS[cur]) {
+    var cols = head.children;
+    if (cols.length === 2) {
+      cols[0].appendChild(cols[1]);
+      var fig = document.createElement('figure');
+      fig.className = 'head-cover reveal'; fig.style.setProperty('--i', 2);
+      fig.innerHTML = '<img src="' + COVERS[cur] + '" alt="" decoding="async"><figcaption class="pill-badge"><span class="dot"></span>Chapter ' + pad(cur) + ' · ' + CHAPTERS[cur - 1].tag + '</figcaption>';
+      head.appendChild(fig);
+      head.classList.add('has-cover');
+    }
+  }
+
+  /* ---------- landing: resume + progress badges ---------- */
+  if (!cur) {
+    var last = store.get('last', null), resumeMount = document.getElementById('resume');
+    if (resumeMount && last && last.n && !(last.n === 1 && last.step === 0)) {
+      var lc = CHAPTERS[last.n - 1];
+      resumeMount.innerHTML = '<a class="resume" href="' + lc.file + '?step=' + (last.step + 1) + '">' + I.resume +
+        '<span>Continue where you left off <b>Chapter ' + pad(lc.n) + ' · step ' + (last.step + 1) + ' of ' + last.total + '</b></span></a>';
+      resumeMount.hidden = false;
+    }
+    document.querySelectorAll('.bcard').forEach(function (card) {
+      var c = CHAPTERS.filter(function (x) { return card.getAttribute('href') === x.file; })[0];
+      var st = c && status(c.n);
+      if (!st) return;
+      var chip = document.createElement('span');
+      chip.className = 'bstate ' + st;
+      chip.innerHTML = st === 'done' ? I.check + 'Completed' : 'Viewed';
+      var meta = card.querySelector('.bmeta');
+      if (meta) meta.insertBefore(chip, meta.lastElementChild);
+    });
   }
 
   /* ---------- keyboard: chapters (scroll mode) ---------- */
   window.addEventListener('keydown', function (e) {
     if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
-    if (body.classList.contains('present')) return;
+    if (body.classList.contains('present') || !menu.hidden) return;
     var t = e.target;
     if (t && t.closest && t.closest('input, textarea, select, [role="slider"], [data-keys]')) return;
     var to = null;
@@ -111,6 +221,17 @@
     if (e.key === 'ArrowLeft' && cur) to = cur > 1 ? CHAPTERS[cur - 2].file : 'index.html';
     if (to) window.location.href = to;
   });
+
+  /* ---------- touch wording ---------- */
+  if (touch) {
+    document.querySelectorAll('.stage-hint, .step .note, .dh-hint, [data-touch-text]').forEach(function (el) {
+      var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      var node;
+      while ((node = w.nextNode())) {
+        node.nodeValue = node.nodeValue.replace(/\bHover\b/g, 'Tap').replace(/\bhover\b/g, 'tap').replace(/\bMove across\b/g, 'Drag across');
+      }
+    });
+  }
 
   /* ---------- hand-drawn ellipse ---------- */
   function scribble(w, h) {
@@ -159,6 +280,84 @@
   } else {
     revealables.forEach(markIn);
   }
+
+  /* ---------- glossary: define jargon inline ---------- */
+  var tip = null, tipFor = null;
+  function glossary() {
+    var G = window.HX_GLOSSARY;
+    if (!G || !document.querySelector('.step')) return;
+    var entries = G.slice().sort(function (a, b) { return b[0].length - a[0].length; }).map(function (g, i) {
+      var esc = g[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      var caps = /[A-Z].*[A-Z]/.test(g[0]);
+      return { term: g[0], def: g[1], id: 'g' + i, re: new RegExp('(^|[^\\p{L}\\p{N}-])(' + esc + ')(?![\\p{L}\\p{N}])', caps ? 'u' : 'iu') };
+    });
+    document.querySelectorAll('.step').forEach(function (step) {
+      var used = {};
+      step.querySelectorAll('p, li, dd').forEach(function (block) {
+        entries.forEach(function (en) {
+          if (used[en.term]) return;
+          var w = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, { acceptNode: function (n) { return n.parentNode.closest('.term, button, a, dt, .chip') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; } });
+          var node;
+          while ((node = w.nextNode())) {
+            var m = en.re.exec(node.nodeValue);
+            if (!m) continue;
+            var start = m.index + m[1].length, word = m[2];
+            var after = node.splitText(start); after.nodeValue = after.nodeValue.slice(word.length);
+            var b = document.createElement('button');
+            b.type = 'button'; b.className = 'term'; b.textContent = word;
+            b.setAttribute('data-def', en.def); b.setAttribute('data-term', en.term);
+            b.setAttribute('aria-expanded', 'false');
+            node.parentNode.insertBefore(b, after);
+            used[en.term] = true;
+            break;
+          }
+        });
+      });
+    });
+    tip = document.createElement('div');
+    tip.className = 'gtip'; tip.id = 'gtip'; tip.setAttribute('role', 'tooltip'); tip.hidden = true;
+    body.appendChild(tip);
+    var terms = [].slice.call(document.querySelectorAll('.term'));
+    terms.forEach(function (t) {
+      t.addEventListener('mouseenter', function () { if (!touch) showTip(t); });
+      t.addEventListener('mouseleave', function () { if (!touch && tipFor === t && !t.classList.contains('pinned')) hideTip(); });
+      t.addEventListener('focus', function () { if (t.matches(':focus-visible')) showTip(t); });
+      t.addEventListener('blur', function () { if (tipFor === t) hideTip(); });
+      t.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (tipFor === t && t.classList.contains('pinned')) { hideTip(); return; }
+        showTip(t); t.classList.add('pinned');
+      });
+    });
+    document.addEventListener('click', function (e) { if (tipFor && !tip.contains(e.target)) hideTip(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && tipFor) { e.preventDefault(); hideTip(); } });
+    window.addEventListener('scroll', function () { if (tipFor) place(tipFor); }, { passive: true });
+    window.addEventListener('resize', function () { if (tipFor) place(tipFor); });
+  }
+  function showTip(t) {
+    if (tipFor && tipFor !== t) hideTip();
+    tipFor = t;
+    tip.innerHTML = '<b>' + t.getAttribute('data-term') + '</b><span>' + t.getAttribute('data-def') + '</span>';
+    tip.hidden = false;
+    t.setAttribute('aria-expanded', 'true'); t.setAttribute('aria-describedby', 'gtip');
+    place(t);
+    void tip.offsetWidth; tip.classList.add('on');
+  }
+  function hideTip() {
+    if (!tipFor) return;
+    tipFor.classList.remove('pinned'); tipFor.setAttribute('aria-expanded', 'false'); tipFor.removeAttribute('aria-describedby');
+    tipFor = null; tip.classList.remove('on'); tip.hidden = true;
+  }
+  function place(t) {
+    var r = t.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight;
+    var x = Math.max(12, Math.min(window.innerWidth - tw - 12, r.left + r.width / 2 - tw / 2));
+    var below = r.bottom + 10 + th < window.innerHeight - 8;
+    var y = below ? r.bottom + 10 : r.top - th - 10;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+    tip.style.setProperty('--ax', (r.left + r.width / 2 - x) + 'px');
+    tip.classList.toggle('above', !below);
+  }
+  glossary();
 
   /* ---------- linked highlighting ----------
      Inside a [data-links] scope, data-t="key" elements are triggers and every element whose
@@ -243,6 +442,10 @@
     };
   }
   function onReveal(el, cb) { if (el.classList.contains('in')) cb(); else el.addEventListener('reveal', cb, { once: true }); }
+  function whileVisible(el, cb) {
+    if (!('IntersectionObserver' in window)) { cb(true); return; }
+    new IntersectionObserver(function (es) { cb(es[0].isIntersecting); }).observe(el);
+  }
 
   /* ---------- story engine ----------
      .story > .stage-col (sticky dark stage) + .steps > .step. Scroll activates the step crossing
@@ -255,14 +458,35 @@
     var n = steps.length, idx = -1, mode = 'scroll', io = null;
     var dotsEl = root.querySelector('.dots');
     var prevBtn = root.querySelector('[data-step-prev]'), nextBtn = root.querySelector('[data-step-next]');
+    var stepsCol = root.querySelector('.steps');
     steps.forEach(function (s, i) {
       var sn = s.querySelector('.step-n');
       if (sn && !sn.textContent.trim()) sn.textContent = 'Step ' + pad(i + 1) + ' of ' + pad(n);
     });
     if (dotsEl) {
-      dotsEl.innerHTML = steps.map(function (s, i) { return '<button type="button" aria-label="Step ' + (i + 1) + '"></button>'; }).join('');
+      dotsEl.innerHTML = steps.map(function (s, i) {
+        var h = s.querySelector('h2');
+        var t = h ? h.textContent.replace(/\s+/g, ' ').trim() : 'Step ' + (i + 1);
+        return '<button type="button" aria-label="Step ' + (i + 1) + ': ' + t + '" title="' + (i + 1) + ' · ' + t + '"></button>';
+      }).join('');
       [].slice.call(dotsEl.children).forEach(function (b, i) { b.addEventListener('click', function () { request(i); }); });
     }
+
+    /* "up next" cue on the last step (Present mode) */
+    var nxc = CHAPTERS[cur];
+    var cue = document.createElement('div');
+    cue.className = 'pnext';
+    cue.innerHTML = nxc
+      ? '<span class="label">Up next</span><span class="pnext-t">Chapter ' + pad(nxc.n) + ' · ' + nxc.title + '</span><span class="pnext-k"><kbd>→</kbd> to continue</span>'
+      : '<span class="label">End of the series</span><span class="pnext-t">That’s all eight chapters.</span><span class="pnext-k"><kbd>Esc</kbd> to exit</span>';
+    if (stepsCol) stepsCol.appendChild(cue);
+    if (document.documentElement.classList.contains('og') && stepsCol && cur) {
+      var c0 = CHAPTERS[cur - 1], og = document.createElement('div');
+      og.className = 'og-title';
+      og.innerHTML = '<span class="label">Chapter ' + pad(cur) + ' of 08 · ' + c0.tag + '</span><b>' + c0.title + '</b><span class="t">' + c0.blurb + '</span>';
+      stepsCol.appendChild(og);
+    }
+
     function go(i) {
       i = Math.max(0, Math.min(n - 1, i));
       if (i === idx) return;
@@ -272,6 +496,10 @@
       if (dotsEl) [].slice.call(dotsEl.children).forEach(function (b, k) { if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
       if (prevBtn) prevBtn.disabled = mode === 'scroll' && i === 0;
       if (nextBtn) nextBtn.disabled = mode === 'scroll' && i === n - 1;
+      cue.classList.toggle('on', i === n - 1);
+      if (tipFor) hideTip();
+      store.set('last', { n: cur, step: i, total: n });
+      if (i === n - 1 && done.indexOf(cur) < 0) { done.push(cur); store.set('done', done); }
       if (opts.onStep) opts.onStep(i, steps[i], from);
     }
     function scrollToStep(i, instant) {
@@ -321,16 +549,27 @@
     window.addEventListener('scroll', progress, { passive: true });
 
     /* present mode */
+    var toast = document.createElement('div');
+    toast.className = 'ptoast'; toast.setAttribute('aria-hidden', 'true');
+    toast.innerHTML = '<span><kbd>→</kbd> next</span><span><kbd>←</kbd> back</span><span><kbd>F</kbd> full screen</span><span><kbd>Esc</kbd> exit</span>';
+    body.appendChild(toast);
+    var idleTimer = null;
+    function wake() {
+      body.classList.remove('idle');
+      clearTimeout(idleTimer);
+      if (mode === 'present') idleTimer = setTimeout(function () { body.classList.add('idle'); }, 2600);
+    }
+    window.addEventListener('mousemove', wake, { passive: true });
     function presentGo(i) {
       if (i < 0) { if (cur > 1) window.location.href = CHAPTERS[cur - 2].file + '?present=last'; return; }
       if (i >= n) { window.location.href = cur < CHAPTERS.length ? CHAPTERS[cur].file + '?present' : 'index.html'; return; }
       go(i);
     }
     function onPresentKey(e) {
-      if (mode !== 'present') return;
+      if (mode !== 'present' || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
       var k = e.key;
-      if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'Enter' && !e.target.closest('button, a')) { e.preventDefault(); presentGo(idx + 1); }
-      else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace') { e.preventDefault(); presentGo(idx - 1); }
+      if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ' || k === 'Enter' && !e.target.closest('button, a')) { e.preventDefault(); presentGo(idx + 1); }
+      else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp' || k === 'Backspace') { e.preventDefault(); presentGo(idx - 1); }
       else if (k === 'Escape') { e.preventDefault(); exitPresent(); }
       else if (k === 'Home') { e.preventDefault(); presentGo(0); }
       else if (k === 'End') { e.preventDefault(); presentGo(n - 1); }
@@ -348,10 +587,15 @@
       var u = new URL(window.location.href); u.searchParams.set('present', ''); history.replaceState(null, '', u.toString().replace('present=', 'present'));
       if (typeof at === 'number') { idx = -1; go(at); }
       window.dispatchEvent(new Event('resize'));
+      wake();
+      var shown = false;
+      try { shown = sessionStorage.getItem('hx:ptoast'); sessionStorage.setItem('hx:ptoast', '1'); } catch (e) {}
+      if (!shown && !still) { toast.classList.add('on'); setTimeout(function () { toast.classList.remove('on'); }, 4200); }
     }
     function exitPresent() {
       mode = 'scroll';
-      body.classList.remove('present');
+      body.classList.remove('present', 'idle');
+      toast.classList.remove('on');
       var u = new URL(window.location.href); u.searchParams.delete('present'); history.replaceState(null, '', u.toString());
       if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(function () {});
       window.dispatchEvent(new Event('resize'));
@@ -367,8 +611,8 @@
 
     var startAt = parseInt(params.get('step') || '1', 10) - 1;
     if (params.has('present')) {
-      var pv = params.get('present');
-      enterPresent(pv === 'last' ? n - 1 : Math.max(0, startAt));
+      var pvp = params.get('present');
+      enterPresent(pvp === 'last' ? n - 1 : Math.max(0, startAt));
     } else {
       go(Math.max(0, startAt));
       if (params.has('step')) requestAnimationFrame(function () { scrollToStep(startAt, true); });
@@ -378,5 +622,5 @@
     return storyApi;
   }
 
-  window.HX = { chapters: CHAPTERS, current: cur, reduce: reduce, still: still, tween: tween, morph: morph, sampler: sampler, onReveal: onReveal, pad: pad, icons: I, story: story, links: links };
+  window.HX = { chapters: CHAPTERS, current: cur, reduce: reduce, still: still, touch: touch, tween: tween, morph: morph, sampler: sampler, onReveal: onReveal, whileVisible: whileVisible, pad: pad, icons: I, story: story, links: links };
 })();

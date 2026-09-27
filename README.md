@@ -34,15 +34,27 @@ Presentation clickers send PageUp/PageDown, so they work out of the box. Links s
 
 The **landing page** opens on a full-bleed, scrubbable illustrative 24-hour rhythm: move across the chart to watch cortisol and melatonin trade places as the sky glow shifts with the time of day. Below it are a bento grid of chapter previews, a "For the exam room" section and a closing call to action.
 
+## Reader aids
+
+- **Glossary.** The first use of each medical term in a step (ACTH, SHBG, aromatase, allopregnanolone and others) is underlined; hover, tap or focus it for a plain-language definition. All definitions live in `assets/js/glossary.js` for easy clinical review.
+- **Chapter menu.** "All chapters" opens a menu listing every chapter, with the current one and the chapters already viewed or completed on this device.
+- **Continue where you left off.** Progress (last chapter and step, viewed and completed chapters) is saved in the browser's local storage, on that device only, with no personal data. The landing page offers a resume link and badges on viewed chapters.
+- **Share.** "Share this chapter" opens the system share sheet on phones and copies the link on desktop.
+- **Link previews.** Every page has Open Graph and Twitter metadata with a 1200×630 card in `assets/og/`, generated from the chapter's diagram.
+- **Optional cover photographs.** See [IMAGE_PROMPTS.md](IMAGE_PROMPTS.md) for prompts and how to switch covers on.
+
 ## Architecture
 
 Static HTML, CSS and JS, with no framework and no build step. Deployed with GitHub Pages.
 
 ```
 index.html                    Landing: scrubbable day hero, series bento, exam-room section, closing band
+404.html                      Branded not-found page (GitHub Pages)
 01-…html … 08-…html           One chapter each: hero + .story (sticky .stage + .steps) + page script
 assets/css/site.css           Design system: tokens, nav, story/stage layout, Present mode, motion
 assets/js/site.js             Shared engine (see below)
+assets/js/glossary.js         Plain-language definitions used by the inline glossary
+assets/og/                    1200×630 social preview images
 assets/img/                   Optimal wordmarks, symbol, canopy photography
 .github/workflows/deploy.yml  GitHub Pages deployment
 ```
