@@ -467,7 +467,7 @@
   $('hMl').setAttribute('d', mD); $('hMf').setAttribute('d', mD + ' L' + W + ' ' + BASE + ' L0 ' + BASE + ' Z');
 
   var dh = $('dh'), chart = $('dhChart');
-  var skyR = window.HXSky ? window.HXSky($('skyCanvas'), { trees: 'assets/img/treeline.png', still: HX.reduce, scrim: document.querySelector('.dh-copy'), avoid: [document.querySelector('.dh-copy'), document.querySelector('.dh-read')], chart: chart, onLost: function () { dh.classList.remove('gl'); } }) : null;
+  var skyR = window.HXSky ? window.HXSky($('skyCanvas'), { trees: 'assets/img/treeline.png', horizon: 0.82, mist: [0.2, 0.3, 0.42, 0.56], still: HX.reduce, scrim: document.querySelector('.dh-copy'), avoid: [document.querySelector('.dh-copy'), document.querySelector('.dh-read')], chart: chart, onLost: function () { dh.classList.remove('gl'); } }) : null;
   if (skyR) {
     dh.classList.add('gl');
     var relayout = function () { skyR.resize(); render(hour); };
@@ -531,7 +531,6 @@
     render(hour); resumeAt = performance.now() + 5000;
   });
   window.addEventListener('resize', function () { render(hour); });
-  if (skyR && !HX.touch) dh.addEventListener('pointermove', function (e) { skyR.parallax(e.clientX / window.innerWidth * 2 - 1); });
   render(hour);
   if (HX.reduce) return;
   new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }).observe(dh);

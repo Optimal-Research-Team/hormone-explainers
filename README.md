@@ -32,7 +32,7 @@ Presentation clickers send PageUp/PageDown, so they work out of the box. Links s
 | 07 | Sleep, cortisol and the hormone web | Twelve connections grouped into five steps (sleep, melatonin, insulin resistance, sex hormones, mood), ending on sleep's reach. |
 | 08 | The pyramid of interventions | The pyramid builds itself one layer per step, from sleep at the base to supplements at the top. |
 
-The **landing page** opens on a full-bleed, scrubbable illustrative 24-hour rhythm: move across the chart to watch cortisol and melatonin trade places as the sky glow shifts with the time of day. Below it are a bento grid of chapter previews, a "For the exam room" section and a closing call to action.
+The **landing page** opens on a scrubbable illustrative 24-hour rhythm set in a real-time sky over a boreal treeline. Move across the chart and the day moves with it: dawn mist and a low amber sun, a clear blue-teal midday, a coral sunset, then a navy night with stars and the moon. The sun or moon is the head of the scrub cursor. Below the hero are a bento grid of chapter previews, a "For the exam room" section and a closing call to action.
 
 ## Reader aids
 
@@ -54,8 +54,10 @@ index.html                    Landing: scrubbable day hero, series bento, exam-r
 assets/css/site.css           Design system: tokens, nav, story/stage layout, Present mode, motion
 assets/js/site.js             Shared engine (see below)
 assets/js/glossary.js         Plain-language definitions used by the inline glossary
+assets/js/sky.js              Landing hero sky (WebGL): palette by hour, sun/moon, stars, clouds, relit treeline
 assets/og/                    1200×630 social preview images
-assets/img/                   Optimal wordmarks, symbol, canopy photography
+assets/img/                   Optimal wordmarks, symbol, chapter covers, treeline texture, canopy photography
+tools/                        treeline-from-image.py rebuilds assets/img/treeline.png from a three-tone silhouette
 .github/workflows/deploy.yml  GitHub Pages deployment
 ```
 
@@ -68,6 +70,14 @@ assets/img/                   Optimal wordmarks, symbol, canopy photography
 - **Helpers.** `HX.morph()` (SVG path tweening), `HX.tween()`, `HX.sampler()` (y at x along a path) and `HX.onReveal()`.
 - **URL flags.** `?step=N` opens a chapter at step N. `?still` disables all motion, which is useful for screenshots and for checking final states.
 - **Accessibility.** Reduced-motion support, keyboard access for every control, ARIA states, and live regions on readouts.
+
+### Hero sky (`sky.js`)
+
+- One full-screen fragment shader. Sky colours are keyframed by clock hour and interpolated in OKLab; the sun's colour comes from air mass, so it reddens near the horizon.
+- The treeline texture packs three registered silhouette layers (R near, G mid, B far). The far ridge takes the sky's haze, dawn mist sits between ridges, and the low sun rim-lights the near tree tops.
+- Stars rotate slowly with the hour, twinkle and fade with daylight. Clouds are thin wind-stretched streaks, underlit near the sun.
+- Resolution adapts to frame cost; rendering pauses off-screen and in hidden tabs. `?still` or reduced motion renders a single frame. Without WebGL the hero falls back to a CSS glow.
+- `?h=HH` pins the hour (useful with `?still` for screenshots). To swap the treeline, generate a black / mid-grey / light-grey silhouette on white and run `python3 tools/treeline-from-image.py source.webp assets/img/treeline.png`.
 
 ### Design system
 

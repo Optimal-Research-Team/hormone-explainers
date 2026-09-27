@@ -40,7 +40,7 @@
     'uniform vec4 uAmt;',   // glow, stars, mist, clouds
     'uniform vec4 uMisc;',  // rim, cloud brightness, trees ready, star rotation
     'uniform vec4 uLand;',  // horizon y, tree strip height, texture aspect, -
-    'uniform vec3 uPar;',   // parallax px: near, mid, far
+    'uniform vec4 uMist;',  // mist band in strip rows (0 = top): fade-in start/end, fade-out start/end
     'uniform vec4 uScrim;', // cx, cy, rx, ry
     'uniform sampler2D uTrees;',
     'float h12(vec2 p){vec3 q=fract(vec3(p.xyx)*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}',
@@ -105,22 +105,22 @@
     // treeline
     '  if(uMisc.z>.001&&q.y<uLand.y){',
     '    float tw=uLand.y*uLand.z;float ty=1.-q.y/uLand.y;',
-    '    float nearM=texture2D(uTrees,vec2((q.x+uPar.x)/tw,ty)).r;',
-    '    float midM=texture2D(uTrees,vec2((q.x+uPar.y)/tw+.37,ty)).g;',
-    '    float farM=texture2D(uTrees,vec2((q.x+uPar.z)/tw+.61,ty)).b;',
+    '    vec3 tm=texture2D(uTrees,vec2(q.x/tw,ty)).rgb;float nearM=tm.r;',
+    '    float midM=tm.g;',
+    '    float farM=tm.b;',
     '    float prox=exp(-sq((q.x-sp.x)/(H*.8)));float rimP=exp(-sq((q.x-sp.x)/(H*.32)));',
     '    vec3 farC=mix(uTreeAmb,atm,.52);',
     '    col=mix(col,farC,farM*uMisc.z);',
     '    float mn=fbm3(vec2(q.x*.0045+uT*.012,q.y*.024-uT*.004));',
-    '    float mb=smoothstep(.36,.52,ty)*(1.-smoothstep(.62,.8,ty));',
+    '    float mb=smoothstep(uMist.x,uMist.y,ty)*(1.-smoothstep(uMist.z,uMist.w,ty));',
     '    float mist=uAmt.z*mb*smoothstep(.28,.78,mn);',
     '    col=mix(col,atm*1.3+uSunCol*g*prox*.35,mist*.75*uMisc.z);',
     '    vec3 midC=mix(uTreeAmb,atm,.2);',
     '    col=mix(col,midC,midM*uMisc.z);',
     '    vec2 ts=normalize(sp-q+vec2(0.,.01));float o=1.4;',
-    '    float nearS=texture2D(uTrees,vec2((q.x+uPar.x+ts.x*o)/tw,1.-(q.y+ts.y*o)/uLand.y)).r;',
+    '    float nearS=texture2D(uTrees,vec2((q.x+ts.x*o)/tw,1.-(q.y+ts.y*o)/uLand.y)).r;',
     '    float rim=nearM*(1.-nearS);',
-    '    vec3 nearC=uTreeAmb*(1.-.35*smoothstep(.75,1.,ty))+uSunCol*rim*uMisc.x*rimP*1.1;',
+    '    vec3 nearC=uTreeAmb*(1.-.35*smoothstep(.75,1.,ty))+uSunCol*rim*uMisc.x*rimP*.6;',
     '    col=mix(col,nearC,nearM*uMisc.z);',
     '  }',
     // text scrim behind the headline
@@ -185,7 +185,7 @@
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
     var loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     var U = {};
-    ['uRes', 'uScale', 'uT', 'uZen', 'uHor', 'uSunCol', 'uTreeAmb', 'uSun', 'uMoon', 'uAmt', 'uMisc', 'uLand', 'uPar', 'uScrim', 'uTrees'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+    ['uRes', 'uScale', 'uT', 'uZen', 'uHor', 'uSunCol', 'uTreeAmb', 'uSun', 'uMoon', 'uAmt', 'uMisc', 'uLand', 'uMist', 'uScrim', 'uTrees'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
 
     var treesReady = 0, treeAspect = 8, treeFade = 0;
     var tex = gl.createTexture();
@@ -213,7 +213,8 @@
 
     var W = 0, H = 0, scale = 1, maxScale = Math.min(window.devicePixelRatio || 1, 1.5);
     var hour = 7, dirty = true, visible = true, raf = 0, t0 = performance.now(), frozenT = 12.0;
-    var par = [0, 0, 0], parT = 0, scrim = [0, 0, 1, 1], slow = 0, frames = 0, ceiling = 1e9, track = 0;
+    var HZ = opts.horizon || 0.5, MIST = opts.mist || [0.36, 0.52, 0.62, 0.8];
+    var scrim = [0, 0, 1, 1], slow = 0, frames = 0, ceiling = 1e9, track = 0;
 
     function size() {
       var r = canvas.getBoundingClientRect();
@@ -241,8 +242,9 @@
 
     function path(h) {
       var s = Math.sin(2 * Math.PI * (h - 6) / 24);
-      var strip = Math.max(140, Math.min(H * 0.36, 360, W * 0.5));
-      var horizon = strip * 0.5;
+      // the strip is sized so its far ridge sits just under the sun's lane at the top of the chart
+      var strip = Math.max(120, Math.min(track ? (track - 58) / HZ : H * 0.36, 360, W * 0.62));
+      var horizon = strip * HZ;
       // the sun and moon ride a lane across the top of the chart, above the highest point of the curves
       var base = (track || strip * 0.85) - 26, up = 12, down = 10;
       var sun = Math.min(base + up * Math.max(s, 0) - down * Math.max(-s, 0), ceiling);
@@ -270,7 +272,6 @@
       var t = opts.still ? frozenT : (now - t0) / 1000;
 
       if (treesReady && treeFade < 1) treeFade = Math.min(1, treeFade + 0.04);
-      par[0] += (parT * 14 - par[0]) * 0.06; par[1] += (parT * 6 - par[1]) * 0.06; par[2] += (parT * 2.2 - par[2]) * 0.06;
 
       gl.uniform2f(U.uRes, W, H); gl.uniform1f(U.uScale, scale); gl.uniform1f(U.uT, t);
       gl.uniform3fv(U.uZen, pal[0]); gl.uniform3fv(U.uHor, pal[1]);
@@ -280,7 +281,7 @@
       gl.uniform4f(U.uAmt, glow, starsA, mist, 0.75);
       gl.uniform4f(U.uMisc, rim, cloudK, treesReady * treeFade, h * 15 * Math.PI / 180 * 0.3);
       gl.uniform4f(U.uLand, horizon, strip, treeAspect, 0);
-      gl.uniform3f(U.uPar, par[0], par[1], par[2]);
+      gl.uniform4f(U.uMist, MIST[0], MIST[1], MIST[2], MIST[3]);
       gl.uniform4f(U.uScrim, scrim[0], scrim[1], scrim[2], scrim[3]);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     }
@@ -291,7 +292,7 @@
       if (!visible || document.hidden) return;
       var dt = now - last;
       var animating = !opts.still;
-      if (dirty || (animating && dt > 30) || Math.abs(parT * 14 - par[0]) > 0.05 || (treesReady && treeFade < 1)) {
+      if (dirty || (animating && dt > 30) || (treesReady && treeFade < 1)) {
         var a = performance.now();
         draw(now); dirty = false; last = now;
         // adaptive resolution: drop to 1x, then 0.75x, if frames run long
@@ -313,7 +314,6 @@
     return {
       set: function (h) { if (h !== hour) { hour = h; dirty = true; if (opts.still) now(); kick(); } },
       body: function (h) { var P = path(h); return P.s >= -0.01 ? { y: P.sun, sun: true } : { y: P.moon, sun: false }; },
-      parallax: function (x) { parT = Math.max(-1, Math.min(1, x)); kick(); },
       resize: function () { size(); kick(); }
     };
   }
