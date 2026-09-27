@@ -25,8 +25,8 @@
       blurb: 'Build from the base: sleep and circadian rhythm come before supplements.' }
   ];
 
-  /* Optional chapter cover photographs (see IMAGE_PROMPTS.md). Add a path to switch one on;
-     it appears in that chapter's header and on the "Up next" card that leads to it. */
+  /* Chapter cover photographs (see IMAGE_PROMPTS.md). Chapter pages carry theirs in markup
+     (.panel-cover, .head-cover-m); this map feeds the "Up next" card that leads to each chapter. */
   var COVERS = {
     1: 'assets/img/chapters/01.jpg',
     2: 'assets/img/chapters/02.jpg',
@@ -77,36 +77,45 @@
     body.insertBefore(skip, body.firstChild);
   }
 
-  /* ---------- nav ---------- */
+  /* ---------- nav ----------
+     A slim bar: wordmark, the current chapter (once its header has scrolled away), Present,
+     Chapters, and a reading-progress hairline. Over [data-nav-dark] sections it turns light-on-dark. */
   var navMount = document.getElementById('nav');
   var hasStory = !!document.querySelector('.story');
+  if (hasStory) body.classList.add('has-story');
   if (navMount) {
-    var prev = cur > 1 ? CHAPTERS[cur - 2] : null;
-    var next = cur && cur < CHAPTERS.length ? CHAPTERS[cur] : null;
-    var steps = '';
-    if (cur) {
-      steps = '<div class="nav-steps"><span class="nav-count num">' + pad(cur) + '<i>/' + pad(CHAPTERS.length) + '</i></span><nav class="steps-nav" aria-label="Chapters">' +
-        CHAPTERS.map(function (c) {
-          var cls = 'snav' + (c.n < cur ? ' is-done' : '') + (c.n === cur ? ' is-current' : '');
-          return '<a class="' + cls + '" href="' + c.file + '"' + (c.n === cur ? ' aria-current="page"' : '') +
-            ' aria-label="Chapter ' + pad(c.n) + ': ' + c.title + '"><span class="tip">' + pad(c.n) + ' · ' + c.title + '</span></a>';
-        }).join('') + '</nav></div>';
-    }
-    var menuBtn = '<button class="nav-cta' + (cur ? '' : ' nav-ghost') + '" type="button" data-menu aria-expanded="false" aria-controls="cmenu">' + I.grid + '<span>' + (cur ? 'All chapters' : 'Chapters') + '</span></button>';
+    var here = cur ? CHAPTERS[cur - 1] : null;
+    var menuBtn = '<button class="nav-btn nav-menu" type="button" data-menu aria-expanded="false" aria-controls="cmenu">' + I.grid + '<span>Chapters</span></button>';
     var actions = cur
-      ? '<a class="icon-btn" href="' + (prev ? prev.file : 'index.html') + '" aria-label="Previous chapter">' + I.prev + '</a>' +
-        '<a class="icon-btn" href="' + (next ? next.file : 'index.html') + '" aria-label="Next chapter">' + I.next + '</a>' +
-        (hasStory ? '<button class="nav-cta nav-ghost" type="button" data-present>' + I.present + '<span>Present</span></button>' : '') +
-        menuBtn
-      : menuBtn + '<a class="nav-cta" href="' + CHAPTERS[0].file + '"><span>Start chapter 01</span>' + I.arrow + '</a>';
+      ? (hasStory ? '<button class="nav-btn" type="button" data-present>' + I.present + '<span>Present</span></button>' : '') + menuBtn
+      : menuBtn + '<a class="nav-btn nav-cta" href="' + CHAPTERS[0].file + '"><span>Start chapter 01</span>' + I.arrow + '</a>';
     navMount.innerHTML =
       '<div class="nav">' +
         '<a class="nav-brand" href="index.html" aria-label="Hormone explainers — home">' +
-          '<img src="assets/img/optimal-wordmark-white.png" alt="Optimal" width="90" height="21">' +
+          '<img class="wm wm-dark" src="assets/img/optimal-wordmark-green.png" alt="Optimal" width="86" height="20">' +
+          '<img class="wm wm-light" src="assets/img/optimal-wordmark-white.png" alt="" width="86" height="20">' +
           '<span class="nav-title">Hormone explainers</span>' +
-        '</a>' + steps +
+        '</a>' +
+        (here ? '<div class="nav-here" aria-hidden="true"><span class="num">' + pad(cur) + '</span>' + here.title + '</div>' : '') +
         '<div class="nav-actions">' + actions + '</div>' +
+        '<span class="nav-prog" aria-hidden="true"></span>' +
       '</div>';
+    var onScroll = function () { navMount.classList.toggle('scrolled', window.scrollY > 4); };
+    window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+    var darks = document.querySelectorAll('[data-nav-dark]');
+    if (darks.length && 'IntersectionObserver' in window) {
+      var hits = new Set();
+      var dio = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) hits.add(e.target); else hits.delete(e.target); });
+        navMount.classList.toggle('on-dark', hits.size > 0);
+      }, { rootMargin: '0px 0px -' + Math.max(0, window.innerHeight - 40) + 'px 0px' });
+      darks.forEach(function (d) { dio.observe(d); });
+      navMount.classList.add('on-dark');
+    }
+    var headEl = document.querySelector('.chapter-head');
+    if (headEl && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { navMount.classList.toggle('show-here', !es[0].isIntersecting); }, { rootMargin: '-64px 0px 0px 0px' }).observe(headEl.querySelector('h1') || headEl);
+    }
   }
 
   /* ---------- chapter menu ---------- */
@@ -146,19 +155,18 @@
     var cover = nx && COVERS[nx.n] ? ' style="--cover:url(\'' + abs(webp(COVERS[nx.n])) + '\')"' : '';
     var card = nx
       ? '<a class="next-card" href="' + nx.file + '"' + cover + '>' +
-          '<div class="next-copy"><span class="label">Up next · Chapter ' + pad(nx.n) + ' · ' + nx.tag + '</span>' +
+          '<div class="next-copy"><span class="next-k"><span class="num">Up next · ' + pad(nx.n) + '</span>' + nx.tag + '</span>' +
           '<span class="next-title">' + nx.title + '</span><span class="next-blurb">' + nx.blurb + '</span></div>' +
-          '<span class="next-go" aria-hidden="true">' + I.arrow + '</span><span class="next-num" aria-hidden="true">' + pad(nx.n) + '</span></a>'
-      : '<a class="next-card" href="index.html">' +
-          '<div class="next-copy"><span class="label">End of the series</span>' +
+          '<span class="next-go" aria-hidden="true">' + I.arrow + '</span></a>'
+      : '<a class="next-card" href="index.html" style="--cover:url(\'' + abs(webp(COVERS[1])) + '\')">' +
+          '<div class="next-copy"><span class="next-k"><span class="num">08 of 08</span>End of the series</span>' +
           '<span class="next-title">Back to all eight chapters</span><span class="next-blurb">Revisit any chapter, or start again from how cortisol works.</span></div>' +
           '<span class="next-go" aria-hidden="true">' + I.arrow + '</span></a>';
     endMount.innerHTML = '<section class="end">' + card +
       '<div class="end-row">' +
-        (pv ? '<a class="end-link" href="' + pv.file + '">' + I.back + 'Previous: ' + pv.title + '</a>'
-            : '<a class="end-link" href="index.html">' + I.back + 'All chapters</a>') +
-        '<span class="end-tools"><button class="end-link share" type="button" data-share>' + I.share + '<span>Share this chapter</span></button>' +
-        '<span class="kbd-hint"><kbd>←</kbd><kbd>→</kbd> between chapters</span></span>' +
+        (pv ? '<a class="end-link" href="' + pv.file + '">' + I.back + '<span><small>Previous</small>' + pv.title + '</span></a>'
+            : '<a class="end-link" href="index.html">' + I.back + '<span><small>Overview</small>All chapters</span></a>') +
+        '<button class="end-share" type="button" data-share>' + I.share + '<span>Share this chapter</span></button>' +
       '</div></section>';
   }
   var footMount = document.getElementById('foot');
@@ -182,20 +190,6 @@
       else window.prompt('Copy this link', url);
     });
   });
-
-  /* ---------- chapter cover photograph (optional) ---------- */
-  var head = document.querySelector('.chapter-head');
-  if (head && cur && COVERS[cur]) {
-    var cols = head.children;
-    if (cols.length === 2) {
-      cols[0].appendChild(cols[1]);
-      var fig = document.createElement('figure');
-      fig.className = 'head-cover reveal'; fig.style.setProperty('--i', 2);
-      fig.innerHTML = '<picture><source srcset="' + webp(COVERS[cur]) + '" type="image/webp"><img src="' + COVERS[cur] + '" alt="" width="1536" height="1024" decoding="async" fetchpriority="high"></picture><figcaption class="pill-badge"><span class="dot"></span>Chapter ' + pad(cur) + ' · ' + CHAPTERS[cur - 1].tag + '</figcaption>';
-      head.appendChild(fig);
-      head.classList.add('has-cover');
-    }
-  }
 
   /* ---------- landing: resume + progress badges ---------- */
   if (!cur) {
@@ -247,7 +241,8 @@
     el.classList.add('in');
     el.dispatchEvent(new CustomEvent('reveal'));
   }
-  var revealables = document.querySelectorAll('.reveal, .fig, .stage, [data-reveal]');
+  var coverGate = !!document.querySelector('.panel-cover') && window.matchMedia('(min-width: 1001px)').matches;
+  var revealables = [].slice.call(document.querySelectorAll('.reveal, .fig, .stage, [data-reveal]')).filter(function (el) { return !(coverGate && el.classList.contains('stage')); });
   if ('IntersectionObserver' in window && !reduce) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) { if (e.isIntersecting) { markIn(e.target); io.unobserve(e.target); } });
@@ -435,18 +430,36 @@
     var dotsEl = root.querySelector('.dots');
     var prevBtn = root.querySelector('[data-step-prev]'), nextBtn = root.querySelector('[data-step-next]');
     var stepsCol = root.querySelector('.steps');
+    var titles = steps.map(function (s, i) {
+      var h = s.querySelector('h2');
+      return h ? h.textContent.replace(/\s+/g, ' ').trim() : 'Step ' + (i + 1);
+    });
     steps.forEach(function (s, i) {
       var sn = s.querySelector('.step-n');
-      if (sn && !sn.textContent.trim()) sn.textContent = 'Step ' + pad(i + 1) + ' of ' + pad(n);
+      if (sn && !sn.textContent.trim()) { sn.innerHTML = pad(i + 1) + '<i>/ ' + pad(n) + '</i>'; sn.setAttribute('aria-label', 'Step ' + (i + 1) + ' of ' + n); }
     });
-    if (dotsEl) {
-      dotsEl.innerHTML = steps.map(function (s, i) {
-        var h = s.querySelector('h2');
-        var t = h ? h.textContent.replace(/\s+/g, ' ').trim() : 'Step ' + (i + 1);
-        return '<button type="button" aria-label="Step ' + (i + 1) + ': ' + t + '" title="' + (i + 1) + ' · ' + t + '"></button>';
+    if (dotsEl) dotsEl.innerHTML = '<span class="scount num" aria-hidden="true"><b>01</b><i>/ ' + pad(n) + '</i></span>';
+    var countEl = dotsEl && dotsEl.querySelector('b');
+    var toc = root.querySelector('.toc ol');
+    if (toc) {
+      toc.innerHTML = titles.map(function (t, i) {
+        return '<li><a href="#story" data-go="' + i + '"><span class="num">' + pad(i + 1) + '</span><span class="tt">' + t + '</span>' + I.arrow + '</a></li>';
       }).join('');
-      [].slice.call(dotsEl.children).forEach(function (b, i) { b.addEventListener('click', function () { request(i); }); });
+      toc.querySelectorAll('[data-go]').forEach(function (a) {
+        a.addEventListener('click', function (e) { e.preventDefault(); request(+a.getAttribute('data-go')); });
+      });
     }
+    root.querySelectorAll('[data-begin]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); request(0); }); });
+
+    /* the cover photograph holds the right-hand panel until the story starts */
+    var stageEl = root.querySelector('.stage'), headEl = root.querySelector('.chapter-head');
+    function setHead(on) {
+      root.classList.toggle('at-head', on);
+      if (!on && stageEl) markIn(stageEl);
+    }
+    if (headEl && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { if (mode === 'scroll') setHead(es[0].isIntersecting); }, { rootMargin: '0px 0px -52% 0px', threshold: 0 }).observe(headEl);
+    } else setHead(false);
 
     /* "up next" cue on the last step (Present mode) */
     var nxc = CHAPTERS[cur];
@@ -469,7 +482,8 @@
       var from = idx;
       idx = i;
       steps.forEach(function (s, k) { s.classList.toggle('is-active', k === i); });
-      if (dotsEl) [].slice.call(dotsEl.children).forEach(function (b, k) { if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
+      if (countEl) countEl.textContent = pad(i + 1);
+      if (toc) [].slice.call(toc.querySelectorAll('a')).forEach(function (a, k) { if (k === i) a.setAttribute('aria-current', 'step'); else a.removeAttribute('aria-current'); });
       if (prevBtn) prevBtn.disabled = mode === 'scroll' && i === 0;
       if (nextBtn) nextBtn.disabled = mode === 'scroll' && i === n - 1;
       cue.classList.toggle('on', i === n - 1);
@@ -515,12 +529,12 @@
     if (nextBtn) nextBtn.addEventListener('click', function () { request(idx + 1); });
 
     /* reading progress in the nav segment */
-    var seg = document.querySelector('.snav.is-current');
+    var navEl = document.getElementById('nav');
     function progress() {
-      if (!seg) return;
-      var r = root.getBoundingClientRect(), total = r.height - window.innerHeight * 0.5;
-      var p = Math.max(0, Math.min(1, (window.innerHeight * 0.5 - r.top) / Math.max(1, total)));
-      seg.style.setProperty('--p', (p * 100).toFixed(1) + '%');
+      if (!navEl) return;
+      var r = root.getBoundingClientRect(), total = r.height - window.innerHeight;
+      var p = Math.max(0, Math.min(1, -r.top / Math.max(1, total)));
+      navEl.style.setProperty('--p', p.toFixed(4));
     }
     window.addEventListener('scroll', progress, { passive: true });
 
@@ -558,6 +572,7 @@
     function enterPresent(at) {
       mode = 'present';
       body.classList.add('present');
+      setHead(false);
       if (prevBtn) prevBtn.disabled = false;
       if (nextBtn) nextBtn.disabled = false;
       var u = new URL(window.location.href); u.searchParams.set('present', ''); history.replaceState(null, '', u.toString().replace('present=', 'present'));

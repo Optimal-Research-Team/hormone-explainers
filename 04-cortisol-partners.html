@@ -47,7 +47,6 @@
 .legend-row i { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 700; color: #10190F; }
 .beam { transform-box: view-box; transform-origin: 260px 250px; transition: transform 1.1s var(--spring); }
 .sky, .warn { transition: opacity .6s var(--ease); }
-.kicker { display: block; margin-top: 10px; font-size: 11.5px; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; color: var(--forest); }
 .step dt[data-t] { cursor: pointer; display: inline-block; border-bottom: 1px dashed var(--line-3); transition: color .2s var(--ease), border-color .2s var(--ease); }
 .step dt[data-t]:hover, .step dt[data-t].is-on { color: var(--brick); border-color: var(--brick); }
 .step .chip.quiet { cursor: default; }
@@ -57,25 +56,20 @@
 <body data-chapter="4">
 <div id="nav" class="nav-wrap"></div>
 
-<main class="page">
-  <header class="chapter-head">
-    <div>
-      <p class="eyebrow reveal"><span class="dot"></span>Chapter 04 <span class="muted">/ 08 · Regulation</span></p>
-      <h1 class="display reveal" style="--i:1">Cortisol's <em class="mark">partners</em></h1>
+<section class="story at-head" id="story" data-links aria-label="Cortisol's partners, step by step">
+  <header class="chapter-head" id="top">
+    <p class="ch-kicker reveal"><span class="num">Chapter 04</span><span>Regulation</span></p>
+    <h1 class="display reveal" style="--i:1">Cortisol's <em class="mark">partners</em></h1>
+    <p class="lede reveal" style="--i:2">Cortisol does not act alone. Some molecules turn down its production, some soften its effects once released, and some sit on the other end of the see-saw.</p>
+    <div class="head-actions reveal" style="--i:3">
+      <a class="btn btn-primary" href="#story" data-begin>Begin<svg class="go" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v11M3.5 9 8 13.5 12.5 9"/></svg></a>
+      <button class="btn-text" type="button" data-present><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1.8" y="2.5" width="12.4" height="8.5" rx="1.6"/><path d="M8 11v2.5M5.5 13.5h5"/><path d="M6.8 5.2v3.1L9.3 6.75z" fill="currentColor"/></svg>Present in the exam room</button>
     </div>
-    <div class="reveal" style="--i:2">
-      <p class="lede">Cortisol does not act alone. Some molecules turn down its production, some soften its effects once released, and some sit on the other end of the see-saw.</p>
-      <div class="head-actions">
-        <a class="btn btn-primary btn-sm" href="#story">Begin<svg class="go" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v11M3.5 9 8 13.5 12.5 9"/></svg></a>
-        <button class="btn btn-ghost btn-sm" type="button" data-present><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1.8" y="2.5" width="12.4" height="8.5" rx="1.6"/><path d="M8 11v2.5M5.5 13.5h5"/><path d="M6.8 5.2v3.1L9.3 6.75z" fill="currentColor"/></svg>Present</button>
-        <span class="head-meta">7 steps</span>
-      </div>
-    </div>
+    <figure class="head-cover-m reveal" style="--i:3" aria-hidden="true"><picture><source srcset="assets/img/chapters/04.webp" type="image/webp"><img src="assets/img/chapters/04.jpg" alt="" width="1536" height="1024" decoding="async"></picture></figure>
+    <nav class="toc reveal" style="--i:4" aria-label="In this chapter"><p class="toc-h"><span>In this chapter</span><span class="num">7 steps</span></p><ol></ol></nav>
   </header>
-</main>
-
-<section class="story" id="story" data-links aria-label="Cortisol's partners, step by step">
   <div class="stage-col">
+    <figure class="panel-cover" style="--op:80%" aria-hidden="true"><picture><source srcset="assets/img/chapters/04.webp" type="image/webp"><img src="assets/img/chapters/04.jpg" alt="" width="1536" height="1024" decoding="async" fetchpriority="high"></picture><figcaption><span class="num">Plate 04</span>Counterbalance</figcaption></figure>
     <div class="stage" id="stage">
       <div class="stage-head">
         <span class="stage-label" id="sLabel">Fig. 04 · The stress axis</span>

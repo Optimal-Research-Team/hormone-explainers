@@ -6,7 +6,7 @@ Guided, interactive patient-education stories from **Optimal**: eight short chap
 
 ## What it is
 
-Each chapter is a **scroll-driven story**. The diagram sits on a dark "night garden" stage that stays pinned while short narrative steps scroll past, and every step drives the diagram. Readers can still hover, tap and drag the diagram at any point.
+Each chapter is a **scroll-driven story** laid out as one split screen. The reading column on the left opens with the chapter title, a short lede and an "In this chapter" contents list; the full-height panel on the right opens on the chapter's cover plate. When the story begins, the plate dissolves into the live diagram, which stays pinned while short narrative steps scroll past, and every step drives it. Readers can still hover, tap and drag the diagram at any point.
 
 **Present mode** is for the exam room. Press **Present** (in the nav or the chapter header) and the chapter fills the screen with one step at a time.
 
@@ -63,8 +63,8 @@ tools/                        treeline-from-image.py rebuilds assets/img/treelin
 
 ### `site.js`
 
-- **Chrome.** The floating glass nav shows chapter progress, a reading-progress fill and a Present button. It also renders the "Up next" card and the footer, all from one `CHAPTERS` config. Pages set `<body data-chapter="N">`.
-- **Story engine.** `HX.story({ onStep })` wires `.story`. An IntersectionObserver activates the step crossing a trigger line; on mobile, the line sits just below the pinned stage. The stage stepper (‹ • • • ›) and Present mode drive the same `go(i)`.
+- **Chrome.** A slim nav bar with the wordmark, the current chapter title (once the header has scrolled away), Present, Chapters and a reading-progress hairline; over `[data-nav-dark]` sections (the landing hero) it turns light-on-dark. It also renders the chapter menu, the "Up next" card and the footer, all from one `CHAPTERS` config. Pages set `<body data-chapter="N">`.
+- **Story engine.** `HX.story({ onStep })` wires `.story` (`.chapter-head`, `.stage-col`, `.steps`). An IntersectionObserver activates the step crossing a trigger line; on mobile, the line sits just below the pinned stage. The contents list, the stage stepper (‹ 02 / 05 ›) and Present mode drive the same `go(i)`. While the header is in view the story carries `.at-head`, which shows the cover plate (`.panel-cover`) over the stage; leaving it reveals the stage and starts its entrance animations.
 - **Present mode.** Adds a `present` class to `body`, handles keyboard and clicker input, and hands off between chapters using `?present` / `?present=last`.
 - **Linked highlighting.** Inside `[data-links]`, elements with `data-t` are triggers and elements whose `data-k` contains an active key get `.is-on`. Active keys are, in priority order: hover, click-pin, then the story's base keys (`_links.setBase([...])`).
 - **Helpers.** `HX.morph()` (SVG path tweening), `HX.tween()`, `HX.sampler()` (y at x along a path) and `HX.onReveal()`.
@@ -81,9 +81,10 @@ tools/                        treeline-from-image.py rebuilds assets/img/treelin
 
 ### Design system
 
-- Optimal brand: cream `#FFFCF7` and forest `#2C4E25` for reading surfaces. Diagrams use a luminous palette (sage `#B7D3AE`, amber `#F2B46E`, periwinkle `#AEBEF1`, coral `#EE8B75`) on a dark forest stage textured with the Optimal canopy photograph.
+- Optimal brand: cream `#FFFCF7` and forest `#2C4E25` for reading surfaces. Diagrams use a luminous palette (sage `#B7D3AE`, amber `#F2B46E`, periwinkle `#AEBEF1`, coral `#EE8B75`) on a deep forest panel with soft light and fine grain.
+- Editorial details: numbered steps (`02 / 05`) with an optional kicker, hairline-ruled lists and contents, sentence-case figure captions, and cover plates captioned by their metaphor.
 - Type: Castoro (display) and Public Sans (UI).
-- The floating glass pill nav, the italic accent word in each title and the photo cards follow beoptimal.ca.
+- The italic accent word in each title and the photography follow beoptimal.ca.
 - Cross-document view transitions between chapters (Chromium, Safari 18+).
 
 ## Development

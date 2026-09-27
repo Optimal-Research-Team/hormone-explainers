@@ -34,7 +34,6 @@
 .halted .halo { animation: hx-pulse 1.5s ease-out infinite; }
 .center-a { font-family: var(--display); font-style: italic; font-size: 26px; fill: rgba(255, 252, 247, .85); }
 .center-b { font-family: var(--display); font-size: 36px; fill: #F2B46E; letter-spacing: -.02em; }
-.kicker { display: block; margin-top: 10px; font-size: 11.5px; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; color: var(--amber); }
 .tools .chip { background: var(--amber-wash); border-color: transparent; color: #7A4B2A; }
 .caution { display: flex; gap: 10px; align-items: flex-start; margin: 16px 0 0; padding: 12px 14px; border-radius: 12px; background: var(--linen); font-size: 13.5px; color: var(--ink-2); max-width: 52ch; }
 .caution svg { width: 16px; height: 16px; flex: none; margin-top: 2px; color: var(--amber); }
@@ -43,25 +42,20 @@
 <body data-chapter="6" data-note="Adapted from clinician notes. Medication names are for discussion with your provider, not a recommendation.">
 <div id="nav" class="nav-wrap"></div>
 
-<main class="page">
-  <header class="chapter-head">
-    <div>
-      <p class="eyebrow reveal"><span class="dot"></span>Chapter 06 <span class="muted">/ 08 · Interventions</span></p>
-      <h1 class="display reveal" style="--i:1">The hormone cycle and its <em class="mark">stop points</em></h1>
+<section class="story at-head" id="story" data-links aria-label="The hormone loop and its stop points, step by step">
+  <header class="chapter-head" id="top">
+    <p class="ch-kicker reveal"><span class="num">Chapter 06</span><span>Interventions</span></p>
+    <h1 class="display reveal" style="--i:1">The hormone cycle and its <em class="mark">stop points</em></h1>
+    <p class="lede reveal" style="--i:2">Hormones feed each other in a loop, so a problem in one spreads to the rest. Each stop is a place where the loop can be interrupted.</p>
+    <div class="head-actions reveal" style="--i:3">
+      <a class="btn btn-primary" href="#story" data-begin>Begin<svg class="go" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v11M3.5 9 8 13.5 12.5 9"/></svg></a>
+      <button class="btn-text" type="button" data-present><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1.8" y="2.5" width="12.4" height="8.5" rx="1.6"/><path d="M8 11v2.5M5.5 13.5h5"/><path d="M6.8 5.2v3.1L9.3 6.75z" fill="currentColor"/></svg>Present in the exam room</button>
     </div>
-    <div class="reveal" style="--i:2">
-      <p class="lede">Hormones feed each other in a loop, so a problem in one spreads to the rest. Each stop is a place where the loop can be interrupted.</p>
-      <div class="head-actions">
-        <a class="btn btn-primary btn-sm" href="#story">Begin<svg class="go" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v11M3.5 9 8 13.5 12.5 9"/></svg></a>
-        <button class="btn btn-ghost btn-sm" type="button" data-present><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1.8" y="2.5" width="12.4" height="8.5" rx="1.6"/><path d="M8 11v2.5M5.5 13.5h5"/><path d="M6.8 5.2v3.1L9.3 6.75z" fill="currentColor"/></svg>Present</button>
-        <span class="head-meta">8 steps</span>
-      </div>
-    </div>
+    <figure class="head-cover-m reveal" style="--i:3" aria-hidden="true"><picture><source srcset="assets/img/chapters/06.webp" type="image/webp"><img src="assets/img/chapters/06.jpg" alt="" width="1536" height="1024" decoding="async"></picture></figure>
+    <nav class="toc reveal" style="--i:4" aria-label="In this chapter"><p class="toc-h"><span>In this chapter</span><span class="num">8 steps</span></p><ol></ol></nav>
   </header>
-</main>
-
-<section class="story" id="story" data-links aria-label="The hormone loop and its stop points, step by step">
   <div class="stage-col">
+    <figure class="panel-cover" style="--op:95%" aria-hidden="true"><picture><source srcset="assets/img/chapters/06.webp" type="image/webp"><img src="assets/img/chapters/06.jpg" alt="" width="1536" height="1024" decoding="async" fetchpriority="high"></picture><figcaption><span class="num">Plate 06</span>A loop you can step out of</figcaption></figure>
     <div class="stage" id="stage">
       <div class="stage-head">
         <span class="stage-label">Fig. 06 · One loop, six stops</span>
