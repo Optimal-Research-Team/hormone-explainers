@@ -5,12 +5,12 @@ Each chapter can carry one cover photograph. When a cover is switched on, it app
 1. **The chapter header**, as a rounded photo card to the right of the title (the beoptimal.ca style).
 2. **The "Up next" card** at the end of the previous chapter, as that card's background.
 
-Until a cover is added, the site keeps its current design (text header, canopy photograph on "Up next").
+All eight covers are switched on. A chapter without a cover falls back to a text header and the canopy photograph on "Up next".
 
 ## How to add one
 
 1. Paste a prompt below into ChatGPT (or another image tool) and ask for a **landscape 3:2** image. ChatGPT's 1536 × 1024 output is fine; larger is better.
-2. Save the image as a JPEG named `assets/img/chapters/01.jpg` … `08.jpg`.
+2. Save the image as a JPEG named `assets/img/chapters/01.jpg` … `08.jpg`, plus a WebP copy with the same name (`01.webp` …). The site serves the WebP and falls back to the JPEG.
 3. Switch it on in `assets/js/site.js` under `COVERS`:
    ```js
    var COVERS = {

@@ -28,8 +28,16 @@
   /* Optional chapter cover photographs (see IMAGE_PROMPTS.md). Add a path to switch one on;
      it appears in that chapter's header and on the "Up next" card that leads to it. */
   var COVERS = {
-    // 1: 'assets/img/chapters/01.jpg',
+    1: 'assets/img/chapters/01.jpg',
+    2: 'assets/img/chapters/02.jpg',
+    3: 'assets/img/chapters/03.jpg',
+    4: 'assets/img/chapters/04.jpg',
+    5: 'assets/img/chapters/05.jpg',
+    6: 'assets/img/chapters/06.jpg',
+    7: 'assets/img/chapters/07.jpg',
+    8: 'assets/img/chapters/08.jpg'
   };
+  var webp = function (src) { return src.replace(/\.jpe?g$/i, '.webp'); };
 
   var params = new URLSearchParams(window.location.search);
   var still = params.has('still');
@@ -135,7 +143,7 @@
   var endMount = document.getElementById('end');
   if (endMount && cur) {
     var nx = CHAPTERS[cur], pv = CHAPTERS[cur - 2];
-    var cover = nx && COVERS[nx.n] ? ' style="--cover:url(\'' + abs(COVERS[nx.n]) + '\')"' : '';
+    var cover = nx && COVERS[nx.n] ? ' style="--cover:url(\'' + abs(webp(COVERS[nx.n])) + '\')"' : '';
     var card = nx
       ? '<a class="next-card" href="' + nx.file + '"' + cover + '>' +
           '<div class="next-copy"><span class="label">Up next · Chapter ' + pad(nx.n) + ' · ' + nx.tag + '</span>' +
@@ -183,7 +191,7 @@
       cols[0].appendChild(cols[1]);
       var fig = document.createElement('figure');
       fig.className = 'head-cover reveal'; fig.style.setProperty('--i', 2);
-      fig.innerHTML = '<img src="' + COVERS[cur] + '" alt="" decoding="async"><figcaption class="pill-badge"><span class="dot"></span>Chapter ' + pad(cur) + ' · ' + CHAPTERS[cur - 1].tag + '</figcaption>';
+      fig.innerHTML = '<picture><source srcset="' + webp(COVERS[cur]) + '" type="image/webp"><img src="' + COVERS[cur] + '" alt="" width="1536" height="1024" decoding="async" fetchpriority="high"></picture><figcaption class="pill-badge"><span class="dot"></span>Chapter ' + pad(cur) + ' · ' + CHAPTERS[cur - 1].tag + '</figcaption>';
       head.appendChild(fig);
       head.classList.add('has-cover');
     }

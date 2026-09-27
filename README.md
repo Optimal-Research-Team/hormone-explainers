@@ -41,7 +41,7 @@ The **landing page** opens on a full-bleed, scrubbable illustrative 24-hour rhyt
 - **Continue where you left off.** Progress (last chapter and step, viewed and completed chapters) is saved in the browser's local storage, on that device only, with no personal data. The landing page offers a resume link and badges on viewed chapters.
 - **Share.** "Share this chapter" opens the system share sheet on phones and copies the link on desktop.
 - **Link previews.** Every page has Open Graph and Twitter metadata with a 1200×630 card in `assets/og/`, generated from the chapter's diagram.
-- **Optional cover photographs.** See [IMAGE_PROMPTS.md](IMAGE_PROMPTS.md) for prompts and how to switch covers on.
+- **Chapter cover photographs.** Each chapter header and the "Up next" card that leads to it carry a cover photograph (`assets/img/chapters/`, WebP with JPEG fallback). See [IMAGE_PROMPTS.md](IMAGE_PROMPTS.md) for the prompts used and how to swap one.
 
 ## Architecture
 
