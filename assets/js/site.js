@@ -241,42 +241,10 @@
     });
   }
 
-  /* ---------- hand-drawn ellipse ---------- */
-  function scribble(w, h) {
-    var cx = w / 2, cy = h / 2, rx = w / 2, ry = h / 2, N = 110, turns = 1.06, a0 = Math.PI * 0.9, d = '';
-    for (var i = 0; i <= N; i++) {
-      var t = i / N, a = a0 + t * turns * Math.PI * 2;
-      var k = 1 + 0.03 * Math.sin(t * Math.PI * 3.2) - 0.045 * t;
-      d += (i ? 'L' : 'M') + (cx + Math.cos(a) * rx * k).toFixed(1) + ' ' + (cy + Math.sin(a) * ry * k * (1 + 0.04 * Math.cos(a))).toFixed(1);
-    }
-    return d;
-  }
-  function paintMark(el) {
-    var svg = el.querySelector('svg.scribble');
-    if (!svg) {
-      svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('class', 'scribble'); svg.setAttribute('aria-hidden', 'true');
-      svg.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'path'));
-      el.appendChild(svg);
-    }
-    var w = el.offsetWidth + 28, h = el.offsetHeight + 12;
-    svg.setAttribute('width', w); svg.setAttribute('height', h); svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
-    svg.firstChild.setAttribute('d', scribble(w, h)); svg.firstChild.setAttribute('pathLength', '1');
-  }
-  var marks = [].slice.call(document.querySelectorAll('.mark'));
-  marks.forEach(paintMark);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { marks.forEach(paintMark); });
-  if ('ResizeObserver' in window) {
-    var ro = new ResizeObserver(function (en) { en.forEach(function (e) { paintMark(e.target); }); });
-    marks.forEach(function (m) { ro.observe(m); });
-  }
-
   /* ---------- reveal on scroll ---------- */
   function markIn(el) {
     if (el.classList.contains('in')) return;
     el.classList.add('in');
-    el.querySelectorAll('.mark').forEach(function (m) { m.classList.add('drawn'); });
-    if (el.classList.contains('mark')) el.classList.add('drawn');
     el.dispatchEvent(new CustomEvent('reveal'));
   }
   var revealables = document.querySelectorAll('.reveal, .fig, .stage, [data-reveal]');

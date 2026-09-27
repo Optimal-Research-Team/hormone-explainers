@@ -107,10 +107,6 @@ button { font: inherit; color: inherit; }
 .label { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
 
 .mark { position: relative; display: inline-block; font-style: italic; white-space: nowrap; }
-.mark > svg.scribble { position: absolute; left: -14px; top: -4px; max-width: none; overflow: visible; pointer-events: none; transform: rotate(-2deg); }
-.mark > svg.scribble path { fill: none; stroke: rgba(26, 80, 18, .5); stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
-.mark.drawn > svg.scribble path { transition: stroke-dashoffset 1.3s var(--ease) .15s; stroke-dashoffset: 0; }
-.on-dark .mark > svg.scribble path { stroke: rgba(255, 252, 247, .55); }
 
 /* ---------- motion utilities ---------- */
 html.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .9s var(--ease), transform .9s var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }

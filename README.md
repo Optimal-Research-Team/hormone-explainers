@@ -65,7 +65,7 @@ assets/img/                   Optimal wordmarks, symbol, canopy photography
 - **Story engine.** `HX.story({ onStep })` wires `.story`. An IntersectionObserver activates the step crossing a trigger line; on mobile, the line sits just below the pinned stage. The stage stepper (‹ • • • ›) and Present mode drive the same `go(i)`.
 - **Present mode.** Adds a `present` class to `body`, handles keyboard and clicker input, and hands off between chapters using `?present` / `?present=last`.
 - **Linked highlighting.** Inside `[data-links]`, elements with `data-t` are triggers and elements whose `data-k` contains an active key get `.is-on`. Active keys are, in priority order: hover, click-pin, then the story's base keys (`_links.setBase([...])`).
-- **Helpers.** `HX.morph()` (SVG path tweening), `HX.tween()`, `HX.sampler()` (y at x along a path) and `HX.onReveal()`, plus a procedurally drawn hand-drawn ellipse around the title word (the beoptimal.ca motif).
+- **Helpers.** `HX.morph()` (SVG path tweening), `HX.tween()`, `HX.sampler()` (y at x along a path) and `HX.onReveal()`.
 - **URL flags.** `?step=N` opens a chapter at step N. `?still` disables all motion, which is useful for screenshots and for checking final states.
 - **Accessibility.** Reduced-motion support, keyboard access for every control, ARIA states, and live regions on readouts.
 
@@ -73,7 +73,7 @@ assets/img/                   Optimal wordmarks, symbol, canopy photography
 
 - Optimal brand: cream `#FFFCF7` and forest `#2C4E25` for reading surfaces. Diagrams use a luminous palette (sage `#B7D3AE`, amber `#F2B46E`, periwinkle `#AEBEF1`, coral `#EE8B75`) on a dark forest stage textured with the Optimal canopy photograph.
 - Type: Castoro (display) and Public Sans (UI).
-- The floating glass pill nav, the italic-word ellipse motif and the photo cards follow beoptimal.ca.
+- The floating glass pill nav, the italic accent word in each title and the photo cards follow beoptimal.ca.
 - Cross-document view transitions between chapters (Chromium, Safari 18+).
 
 ## Development
