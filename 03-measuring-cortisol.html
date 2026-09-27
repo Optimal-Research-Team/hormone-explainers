@@ -7,44 +7,23 @@
 <meta name="description" content="Awakening response, diurnal slope and area under the curve, all read from one daily cortisol curve. Chapter 03 of 08.">
 <meta name="theme-color" content="#FFFCF7">
 <link rel="icon" href="assets/img/symbol-green.png">
-<script>document.documentElement.classList.add('js')</script>
+<script>document.documentElement.classList.add('js');if(/[?&]still/.test(location.search))document.documentElement.classList.add('still')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Public+Sans:ital,wght@0,300..700;1,400..500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/site.css">
 <style>
-.measure { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
-.m-chart { border-right: 1px solid var(--line); min-width: 0; }
-.m-plot svg { width: 100%; height: auto; overflow: visible; }
-.m-axis { position: relative; height: 26px; margin-top: 10px; }
-.m-axis span { position: absolute; top: 0; transform: translateX(-50%); font-size: 11px; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
-.m-axis span:first-child { transform: none; }
-.m-axis span:last-child { transform: translateX(-100%); }
-.emph { opacity: 0; transition: opacity .35s var(--ease); }
+.emph { opacity: 0; transition: opacity .4s var(--ease); }
 .emph.is-on { opacity: 1; }
 .badge-t { cursor: pointer; }
 .badge-t circle { transition: r .3s var(--spring); }
 .badge-t.is-on circle { r: 21px; }
 .ghost { transition: opacity .5s var(--ease); }
-.pattern-note { display: flex; align-items: center; gap: 10px; margin: 16px 2px 0; font-size: 14.5px; color: var(--ink-2); min-height: 1.5em; }
-.pattern-note .d { width: 9px; height: 9px; border-radius: 50%; background: var(--pc, var(--forest)); flex: none; transition: background .4s var(--ease); }
-
-.m-list { padding: 14px; display: grid; gap: 6px; align-content: start; }
-.m-list .row { grid-template-columns: 30px 1fr; }
-.m-list .row-title { margin: 3px 0 6px; }
-.status { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-.status .chip { height: 28px; font-size: 12.5px; padding: 0 11px; }
-.status .ok { color: var(--forest); border-color: var(--line-2); }
-.status .bad { color: var(--brick); border-color: rgba(155, 59, 46, .28); }
-.status .chip.is-current.ok { background: var(--forest); color: var(--cream); border-color: transparent; }
-.status .chip.is-current.bad { background: var(--brick); color: var(--cream); border-color: transparent; }
-.status .chip:not(.is-current) { opacity: .7; }
-
-@media (max-width: 1000px) {
-  .measure { grid-template-columns: 1fr; }
-  .m-chart { border-right: 0; border-bottom: 1px solid var(--line); }
-}
-@media (max-width: 640px) { .m-plot .svg-label { display: none; } .m-axis span { font-size: 9.5px; letter-spacing: .06em; } }
+.step .tags .chip.cur.status-ok { background: var(--forest); color: var(--cream) !important; border-color: transparent; }
+.step .tags .chip.cur.status-bad { background: var(--brick); color: var(--cream) !important; border-color: transparent !important; }
+.step .tags .chip:not(.cur) { opacity: .7; }
+.m-num { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; font-family: var(--sans); font-size: 14px; font-weight: 700; color: #10190F; margin-right: 12px; vertical-align: 5px; }
+@media (max-width: 640px) { .svg-label, .t-lab { display: none; } }
 </style>
 </head>
 <body data-chapter="3">
@@ -56,81 +35,108 @@
       <p class="eyebrow reveal"><span class="dot"></span>Chapter 03 <span class="muted">/ 08 · Measurement</span></p>
       <h1 class="display reveal" style="--i:1">Three ways to <em class="mark">measure</em> cortisol</h1>
     </div>
-    <p class="lede reveal" style="--i:2">A single cortisol value says little. What matters is the shape of the daily curve: how sharply it rises on waking, how steadily it falls, and how much is produced in total. All three are read from the same curve.</p>
+    <div class="reveal" style="--i:2">
+      <p class="lede">A single cortisol value says little. What matters is the shape of the daily curve, and all three measures are read from that same curve.</p>
+      <div class="head-actions">
+        <a class="btn btn-primary btn-sm" href="#story">Begin<svg class="go" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v11M3.5 9 8 13.5 12.5 9"/></svg></a>
+        <button class="btn btn-ghost btn-sm" type="button" data-present><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1.8" y="2.5" width="12.4" height="8.5" rx="1.6"/><path d="M8 11v2.5M5.5 13.5h5"/><path d="M6.8 5.2v3.1L9.3 6.75z" fill="currentColor"/></svg>Present</button>
+        <span class="head-meta">5 steps</span>
+      </div>
+    </div>
   </header>
-
-  <section class="fig measure" id="measure" data-links aria-label="Reading the daily cortisol curve">
-    <div class="m-chart">
-      <div class="fig-head">
-        <div class="fig-title"><span class="label">Fig. 03 · One day of salivary cortisol</span></div>
-        <div class="seg" role="group" aria-label="Curve pattern" data-keys>
-          <button type="button" data-p="healthy" aria-pressed="true"><span class="sw" style="background:#2C4E25"></span>Healthy</button>
-          <button type="button" data-p="flat" aria-pressed="false"><span class="sw" style="background:#9B3B2E"></span>Flattened</button>
-        </div>
-      </div>
-      <div class="fig-body">
-        <div class="plot m-plot">
-          <svg viewBox="0 0 900 380" role="img" aria-label="Daily salivary cortisol curve with the awakening response, diurnal slope and area under the curve marked.">
-            <defs>
-              <linearGradient id="auc" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#87A482" stop-opacity=".5"/><stop offset="1" stop-color="#87A482" stop-opacity=".06"/></linearGradient>
-            </defs>
-            <g class="lk" data-k="car"><rect x="40" y="20" width="130" height="330" fill="#C97A2B" opacity=".09"/></g>
-            <g class="fx-fade" style="--d:1.3s"><path class="lk" data-k="auc" id="aucFill" fill="url(#auc)" d="M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318 L 860 350 Z"/></g>
-            <line x1="40" y1="16" x2="40" y2="350" stroke="#17200F" stroke-opacity=".5"/>
-            <line x1="40" y1="350" x2="870" y2="350" stroke="#17200F" stroke-opacity=".5"/>
-            <text x="28" y="22" transform="rotate(-90 28 22)" text-anchor="end" font-family="Public Sans" font-size="12" font-weight="600" letter-spacing="1.6" fill="#75786E">CORTISOL</text>
-            <path class="ghost" id="ghost" d="M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318" fill="none" stroke="#C97A2B" stroke-opacity=".55" stroke-width="2.5" stroke-dasharray="4 7" opacity="0"/>
-            <g class="fx-fade" style="--d:1.6s"><line class="lk" data-k="slope" id="slope" x1="170" y1="80" x2="860" y2="318" stroke="#2C4E25" stroke-width="2.5" stroke-dasharray="8 7"/></g>
-            <path class="draw" id="curve" pathLength="1" style="--d:.35s;--dur:1.5s" d="M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318" fill="none" stroke="#C97A2B" stroke-width="6" stroke-linecap="round"/>
-            <path class="emph" data-k="car" id="rise" d="M 40 350 C 70 160, 110 80, 170 80" fill="none" stroke="#A8601C" stroke-width="10" stroke-linecap="round"/>
-            <g class="fx-fade" style="--d:1.8s">
-              <g class="lk" data-k="slope">
-                <circle id="dPt" cx="170" cy="80" r="9" fill="#FFFEFB" stroke="#2C4E25" stroke-width="3.5"/>
-                <circle id="nPt" cx="860" cy="318" r="9" fill="#FFFEFB" stroke="#2C4E25" stroke-width="3.5"/>
-                <text class="svg-label" id="dLab" x="188" y="66" font-family="Castoro" font-style="italic" font-size="22" fill="#2C4E25">peak (D)</text>
-                <text class="svg-label" id="nLab" x="848" y="342" font-family="Castoro" font-style="italic" font-size="22" fill="#2C4E25" text-anchor="end">night (N)</text>
-              </g>
-            </g>
-            <g font-family="Public Sans" font-size="17" font-weight="700" fill="#FFFCF7" text-anchor="middle">
-              <g class="fx-pop" style="--d:2.1s"><g class="badge-t lk" data-t="car" data-k="car"><circle cx="105" cy="48" r="17" fill="#C97A2B"/><text x="105" y="54">1</text></g></g>
-              <g class="fx-pop" style="--d:2.25s"><g class="badge-t lk" data-t="slope" data-k="slope" id="b2"><circle cx="515" cy="172" r="17" fill="#2C4E25"/><text x="515" y="178">2</text></g></g>
-              <g class="fx-pop" style="--d:2.4s"><g class="badge-t lk" data-t="auc" data-k="auc"><circle cx="420" cy="302" r="17" fill="#6F9068"/><text x="420" y="308">3</text></g></g>
-            </g>
-          </svg>
-        </div>
-        <div class="m-axis" aria-hidden="true"><span style="left:4.44%">Wake</span><span style="left:18.9%">+30 min</span><span style="left:50%">Midday</span><span style="left:95.6%">Bedtime</span></div>
-        <p class="pattern-note" id="pNote"><span class="d"></span><span id="pText">Healthy pattern: a sharp rise, a clear drop and a mid-range total.</span></p>
-      </div>
-    </div>
-
-    <div class="m-list">
-      <div class="row lk-soft" data-t="car" data-k="car">
-        <span class="nb" style="background:#C97A2B">1</span>
-        <div>
-          <div class="row-title">Cortisol awakening response</div>
-          <p>The steep climb in the first 30 minutes after waking. It shows how well the HPA axis can mobilise energy for the day.</p>
-          <div class="status"><span class="chip ok is-current">Sharp rise · healthy</span><span class="chip bad">Blunted · concerning</span></div>
-        </div>
-      </div>
-      <div class="row lk-soft" data-t="slope" data-k="slope">
-        <span class="nb" style="background:#2C4E25">2</span>
-        <div>
-          <div class="row-title">Diurnal slope</div>
-          <p>The drop from the morning peak to the evening low (D&nbsp;−&nbsp;N). A steady decline lets you wind down and sleep.</p>
-          <div class="status"><span class="chip ok is-current">Clear drop · healthy</span><span class="chip bad">Flat · concerning</span></div>
-        </div>
-      </div>
-      <div class="row lk-soft" data-t="auc" data-k="auc">
-        <span class="nb" style="background:#6F9068">3</span>
-        <div>
-          <div class="row-title">Area under the curve</div>
-          <p>The whole shaded area: how much cortisol the body makes across the day. Too much or too little both matter.</p>
-          <div class="status"><span class="chip ok is-current">Mid range · healthy</span><span class="chip bad">Very high or low · concerning</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
 </main>
+
+<section class="story" id="story" data-links aria-label="Reading the daily cortisol curve, step by step">
+  <div class="stage-col">
+    <div class="stage" id="stage">
+      <div class="stage-head">
+        <span class="stage-label">Fig. 03 · One day of salivary cortisol</span>
+        <div class="gseg" role="group" aria-label="Curve pattern" data-keys>
+          <button type="button" data-p="healthy" aria-pressed="true"><span class="sw" style="background:#B7D3AE"></span>Healthy</button>
+          <button type="button" data-p="flat" aria-pressed="false"><span class="sw" style="background:#EE8B75"></span>Flattened</button>
+        </div>
+      </div>
+      <div class="stage-canvas">
+        <svg viewBox="0 0 900 410" role="img" aria-label="Daily salivary cortisol curve with the awakening response, diurnal slope and area under the curve marked.">
+          <defs>
+            <linearGradient id="auc" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#B7D3AE" stop-opacity=".42"/><stop offset="1" stop-color="#B7D3AE" stop-opacity=".03"/></linearGradient>
+            <filter id="glow" x="-20%" y="-40%" width="140%" height="180%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <g class="lk" data-k="car"><rect x="40" y="20" width="130" height="330" fill="#F2B46E" opacity=".1"/><line x1="170" y1="20" x2="170" y2="350" stroke="#F2B46E" stroke-opacity=".35" stroke-dasharray="2 5"/></g>
+          <g class="fx-fade" style="--d:1.2s"><path class="lk" data-k="auc" id="aucFill" fill="url(#auc)" d="M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318 L 860 350 Z"/></g>
+          <line class="ax" x1="40" y1="16" x2="40" y2="350"/>
+          <line class="ax" x1="40" y1="350" x2="872" y2="350"/>
+          <text class="t-lab" x="26" y="22" transform="rotate(-90 26 22)" text-anchor="end">CORTISOL</text>
+          <g class="t-lab"><text x="40" y="384">WAKE</text><text x="170" y="384" text-anchor="middle">+30 MIN</text><text x="450" y="384" text-anchor="middle">MIDDAY</text><text x="860" y="384" text-anchor="end">BEDTIME</text></g>
+          <path class="ghost" id="ghost" d="M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318" fill="none" stroke="#F2B46E" stroke-opacity=".5" stroke-width="2.5" stroke-dasharray="4 7" opacity="0"/>
+          <g class="fx-fade" style="--d:1.5s"><line class="lk" data-k="slope" id="slope" x1="170" y1="80" x2="860" y2="318" stroke="#FFFCF7" stroke-opacity=".8" stroke-width="2.5" stroke-dasharray="8 7"/></g>
+          <path class="draw" id="curve" pathLength="1" style="--d:.3s;--dur:1.5s" d="M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318" fill="none" stroke="#F2B46E" stroke-width="6" stroke-linecap="round" filter="url(#glow)"/>
+          <path class="emph" data-k="car" id="rise" d="M 40 350 C 70 160, 110 80, 170 80" fill="none" stroke="#FFD29C" stroke-width="10" stroke-linecap="round" filter="url(#glow)"/>
+          <g class="fx-fade" style="--d:1.7s">
+            <g class="lk" data-k="slope">
+              <circle id="dPt" cx="170" cy="80" r="9" fill="#10190F" stroke="#FFFCF7" stroke-width="3.5"/>
+              <circle id="nPt" cx="860" cy="318" r="9" fill="#10190F" stroke="#FFFCF7" stroke-width="3.5"/>
+              <text class="svg-label t-ser t-it" id="dLab" x="188" y="66" font-size="23">peak (D)</text>
+              <text class="svg-label t-ser t-it" id="nLab" x="846" y="342" font-size="23" text-anchor="end">night (N)</text>
+            </g>
+          </g>
+          <g font-family="Public Sans" font-size="17" font-weight="700" fill="#10190F" text-anchor="middle">
+            <g class="fx-pop" style="--d:2s"><g class="badge-t lk" data-t="car" data-k="car"><circle cx="105" cy="48" r="17" fill="#F2B46E"/><text x="105" y="54">1</text></g></g>
+            <g class="fx-pop" style="--d:2.15s"><g class="badge-t lk" data-t="slope" data-k="slope" id="b2"><circle cx="515" cy="172" r="17" fill="#FFFCF7"/><text x="515" y="178">2</text></g></g>
+            <g class="fx-pop" style="--d:2.3s"><g class="badge-t lk" data-t="auc" data-k="auc"><circle cx="420" cy="302" r="17" fill="#B7D3AE"/><text x="420" y="308">3</text></g></g>
+          </g>
+        </svg>
+      </div>
+      <div class="stage-foot">
+        <div class="readout" id="readout" aria-live="polite"><span class="d"></span><span id="pText">Healthy pattern: a sharp rise, a clear drop and a mid-range total.</span></div>
+        <div class="stepper">
+          <button class="sbtn" type="button" data-step-prev aria-label="Previous step"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg></button>
+          <div class="dots"></div>
+          <button class="sbtn" type="button" data-step-next aria-label="Next step"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="present-top"><img src="assets/img/optimal-wordmark-green.png" alt="Optimal"><span class="pt-label">Chapter 03 · Measurement</span><button class="present-close" type="button" data-present-exit><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>Exit<kbd>Esc</kbd></button></div>
+
+    <article class="step"><div class="step-inner">
+      <span class="step-n"></span>
+      <h2>Read the whole curve</h2>
+      <p>This is one day of salivary cortisol, from waking to bedtime. What matters is its shape:</p>
+      <p>How sharply it rises on waking, how steadily it falls, and how much is produced in total.</p>
+    </div></article>
+
+    <article class="step"><div class="step-inner">
+      <span class="step-n"></span>
+      <h2><span class="m-num" style="background:#F2B46E">1</span>Cortisol awakening response</h2>
+      <p>The steep climb in the first 30 minutes after waking. It shows how well the HPA axis can mobilise energy for the day.</p>
+      <div class="tags"><span class="chip status-ok cur">Sharp rise · healthy</span><span class="chip status-bad">Blunted · concerning</span></div>
+    </div></article>
+
+    <article class="step"><div class="step-inner">
+      <span class="step-n"></span>
+      <h2><span class="m-num" style="background:#E9E4D8">2</span>Diurnal slope</h2>
+      <p>The drop from the morning peak to the evening low (D&nbsp;−&nbsp;N). A steady decline lets you wind down and sleep.</p>
+      <div class="tags"><span class="chip status-ok cur">Clear drop · healthy</span><span class="chip status-bad">Flat · concerning</span></div>
+    </div></article>
+
+    <article class="step"><div class="step-inner">
+      <span class="step-n"></span>
+      <h2><span class="m-num" style="background:#B7D3AE">3</span>Area under the curve</h2>
+      <p>The whole shaded area: how much cortisol the body makes across the day. Too much or too little both matter.</p>
+      <div class="tags"><span class="chip status-ok cur">Mid range · healthy</span><span class="chip status-bad">Very high or low · concerning</span></div>
+    </div></article>
+
+    <article class="step"><div class="step-inner">
+      <span class="step-n"></span>
+      <h2>When the curve flattens</h2>
+      <p>A blunted rise, little drop across the day and a low total: each of the three measures now reads as concerning.</p>
+      <p class="note">Switch between the healthy and flattened patterns with the toggle above the chart.</p>
+    </div></article>
+  </div>
+</section>
 
 <div id="end"></div>
 <div id="foot"></div>
@@ -139,44 +145,47 @@
 (function () {
   var P = {
     healthy: { curve: 'M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318', rise: 'M 40 350 C 70 160, 110 80, 170 80',
-               d: [170, 80], n: [860, 318], b2: [515, 172], color: '#2C4E25',
+               d: [170, 80], n: [860, 318], b2: [515, 172], c: '#B7D3AE',
                note: 'Healthy pattern: a sharp rise, a clear drop and a mid-range total.' },
     flat:    { curve: 'M 40 350 C 60 250, 100 200, 170 190 C 380 196, 620 244, 860 266', rise: 'M 40 350 C 60 250, 100 200, 170 190',
-               d: [170, 190], n: [860, 266], b2: [515, 205], color: '#9B3B2E',
-               note: 'Flattened pattern: a blunted rise, little drop across the day and a low total.' }
+               d: [170, 190], n: [860, 266], b2: [515, 205], c: '#EE8B75',
+               note: 'Flattened pattern: a blunted rise, little drop and a low total.' }
   };
   var $ = function (id) { return document.getElementById(id); };
-  var fig = $('measure'), curve = $('curve');
-  var state = 'healthy', pos = { d: P.healthy.d.slice(), n: P.healthy.n.slice(), b2: P.healthy.b2.slice() };
-
-  function setPattern(k) {
+  var scope = $('story'), stage = $('stage'), curve = $('curve');
+  var state = null, pos = { d: P.healthy.d.slice(), n: P.healthy.n.slice(), b2: P.healthy.b2.slice() };
+  function setPattern(k, instant) {
     if (k === state) return;
+    var first = state === null;
     state = k;
-    var S = P[k];
-    curve.classList.remove('draw'); curve.style.strokeDasharray = 'none';
-    HX.morph(curve, S.curve, 1000);
-    HX.morph($('rise'), S.rise, 1000);
-    HX.morph($('aucFill'), S.curve + ' L 860 350 Z', 1000);
+    var S = P[k], dur = first || instant ? 0 : 1000;
+    if (!first) { curve.classList.remove('draw'); curve.style.strokeDasharray = 'none'; }
+    HX.morph(curve, S.curve, dur); HX.morph($('rise'), S.rise, dur); HX.morph($('aucFill'), S.curve + ' L 860 350 Z', dur);
     $('ghost').setAttribute('opacity', k === 'flat' ? '1' : '0');
     var from = JSON.parse(JSON.stringify(pos));
-    HX.tween(1000, function (e) {
+    HX.tween(dur, function (e) {
       ['d', 'n', 'b2'].forEach(function (key) { pos[key] = [from[key][0] + (S[key][0] - from[key][0]) * e, from[key][1] + (S[key][1] - from[key][1]) * e]; });
       $('dPt').setAttribute('cy', pos.d[1]); $('nPt').setAttribute('cy', pos.n[1]);
-      $('dLab').setAttribute('y', pos.d[1] - 14); $('nLab').setAttribute('y', pos.n[1] + 24);
+      $('dLab').setAttribute('y', pos.d[1] - 14); $('nLab').setAttribute('y', pos.n[1] + 26);
       $('slope').setAttribute('y1', pos.d[1]); $('slope').setAttribute('y2', pos.n[1]);
       var b = $('b2'); b.querySelector('circle').setAttribute('cy', pos.b2[1]); b.querySelector('text').setAttribute('y', pos.b2[1] + 6);
     });
-    document.querySelectorAll('.status').forEach(function (s) {
-      s.querySelector('.ok').classList.toggle('is-current', k === 'healthy');
-      s.querySelector('.bad').classList.toggle('is-current', k === 'flat');
+    document.querySelectorAll('.step .tags').forEach(function (t) {
+      t.querySelector('.status-ok').classList.toggle('cur', k === 'healthy');
+      t.querySelector('.status-bad').classList.toggle('cur', k === 'flat');
     });
-    fig.style.setProperty('--pc', S.color);
+    stage.style.setProperty('--rc', S.c);
     $('pText').textContent = S.note;
-    document.querySelectorAll('.seg button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-p') === k); });
+    document.querySelectorAll('.gseg button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-p') === k); });
   }
-  document.querySelectorAll('.seg button').forEach(function (b) {
+  document.querySelectorAll('.gseg button').forEach(function (b) {
     b.addEventListener('click', function (e) { e.stopPropagation(); setPattern(b.getAttribute('data-p')); });
   });
+  var focus = [null, 'car', 'slope', 'auc', null];
+  HX.story({ onStep: function (i) {
+    setPattern(i === 4 ? 'flat' : 'healthy');
+    scope._links.setBase(focus[i]);
+  } });
 })();
 </script>
 </body>

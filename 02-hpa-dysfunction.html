@@ -7,73 +7,40 @@
 <meta name="description" content="Under chronic stress, the daily cortisol curve flattens in four stages. Chapter 02 of 08.">
 <meta name="theme-color" content="#FFFCF7">
 <link rel="icon" href="assets/img/symbol-green.png">
-<script>document.documentElement.classList.add('js')</script>
+<script>document.documentElement.classList.add('js');if(/[?&]still/.test(location.search))document.documentElement.classList.add('still')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Public+Sans:ital,wght@0,300..700;1,400..500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/site.css">
 <style>
-.systems { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-bottom: 18px; }
-.sys { padding: 22px 24px; border-radius: 20px; background: rgba(255, 254, 251, .7); border: 1px solid var(--line); display: grid; gap: 14px; }
-.sys-top { display: flex; align-items: center; gap: 14px; }
-.sys-abbr { font-family: var(--display); font-size: 1.9rem; line-height: 1; letter-spacing: -.03em; color: var(--forest); }
-.sys-name { font-size: 14.5px; color: var(--ink-3); }
-.sys-top .chip { margin-left: auto; }
-.chain { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
-.chain .chip { height: 30px; font-size: 13.5px; }
-.chain .arr { color: var(--ink-3); font-size: 14px; }
-.sys-note { margin: 0; font-size: 14px; color: var(--ink-3); }
-
-.stages { --sc: #6F9068; display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); }
-.stage-chart { border-right: 1px solid var(--line); min-width: 0; }
-.stage-now { display: grid; gap: 6px; }
-.stage-name { font-family: var(--display); font-size: clamp(1.8rem, 1.4rem + 1vw, 2.4rem); line-height: 1; letter-spacing: -.035em; color: var(--sc); transition: color .5s var(--ease); }
-.play { appearance: none; border: 1px solid var(--line-2); background: var(--card); height: 36px; padding: 0 14px 0 11px; border-radius: 999px; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--ink-2); cursor: pointer; transition: background .2s var(--ease); }
-.play:hover { background: var(--linen); }
-.play svg { width: 14px; height: 14px; }
-.play .i-play { display: none; }
-.play[aria-pressed="false"] .i-play { display: block; }
-.play[aria-pressed="false"] .i-pause { display: none; }
-.stage-plot svg { width: 100%; height: auto; }
-.cur-line { stroke: var(--sc); transition: stroke .5s var(--ease); }
+.stage { --sc: #B7D3AE; }
+.cur-line { stroke: var(--sc); transition: stroke .5s var(--ease), opacity .5s var(--ease); }
 .cur-stop { stop-color: var(--sc); transition: stop-color .5s var(--ease); }
-.ghost { transition: opacity .5s var(--ease); }
 .end-dot { stroke: var(--sc); transition: stroke .5s var(--ease); }
-
-.timeline { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 22px; }
-.tl-track { position: absolute; left: 12.5%; right: 12.5%; top: 9px; height: 2px; background: var(--line-2); border-radius: 2px; }
-.tl-fill { height: 100%; width: 0; border-radius: 2px; background: linear-gradient(90deg, #87A482, var(--sc)); transition: width .8s var(--ease), background .5s var(--ease); }
-.tl-stop { appearance: none; border: 0; background: none; cursor: pointer; display: grid; justify-items: center; gap: 10px; padding: 0 4px; font-size: 13px; font-weight: 500; color: var(--ink-3); position: relative; }
-.tl-dot { width: 20px; height: 20px; border-radius: 50%; background: var(--card); border: 2px solid var(--line-2); display: grid; place-items: center; transition: border-color .4s var(--ease), transform .4s var(--spring); }
-.tl-dot::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--c); transform: scale(0); transition: transform .4s var(--spring); }
-.tl-stop.is-past .tl-dot { border-color: var(--c); }
-.tl-stop.is-past .tl-dot::after { transform: scale(.7); }
-.tl-stop[aria-selected="true"] { color: var(--ink); }
-.tl-stop[aria-selected="true"] .tl-dot { border-color: var(--c); transform: scale(1.2); }
-.tl-stop[aria-selected="true"] .tl-dot::after { transform: scale(1); }
-.tl-caption { display: flex; align-items: center; gap: 10px; margin-top: 18px; }
-.tl-caption::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line-2), transparent); }
-
-.stage-list { list-style: none; margin: 0; padding: 14px; display: grid; gap: 4px; align-content: start; }
-.stage-item { appearance: none; border: 1px solid transparent; background: none; cursor: pointer; width: 100%; text-align: left; display: grid; grid-template-columns: 76px 1fr; gap: 16px; padding: 16px; border-radius: 16px; position: relative; transition: background .35s var(--ease), border-color .35s var(--ease), box-shadow .35s var(--ease); }
-.stage-item::before { content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 3px; border-radius: 3px; background: var(--c); transform: scaleY(0); transition: transform .4s var(--ease); }
-.stage-item:hover { background: var(--linen); }
-.stage-item[aria-selected="true"] { background: var(--card); border-color: var(--line); box-shadow: var(--shadow-1); }
-.stage-item[aria-selected="true"]::before { transform: scaleY(1); }
-.spark { width: 76px; height: 46px; border-radius: 10px; background: var(--linen); border: 1px solid var(--line); padding: 4px; }
-.spark path { fill: none; stroke: var(--c); stroke-width: 3; stroke-linecap: round; }
-.si-label { display: flex; align-items: center; gap: 8px; }
-.si-label .d { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
-.si-name { font-family: var(--display); font-size: 1.4rem; line-height: 1.1; letter-spacing: -.03em; color: var(--forest); margin: 4px 0 6px; }
-.stage-item p { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--ink-2); transition: color .35s var(--ease); }
-.stage-item:not([aria-selected="true"]) p { color: var(--ink-3); }
-
-@media (max-width: 1000px) {
-  .stages { grid-template-columns: 1fr; }
-  .stage-chart { border-right: 0; border-bottom: 1px solid var(--line); }
-}
-@media (max-width: 760px) { .systems { grid-template-columns: 1fr; } }
-@media (max-width: 520px) { .tl-stop { font-size: 11.5px; } .stage-item { grid-template-columns: 1fr; } }
+.ghost, .overlay, .cur { transition: opacity .6s var(--ease); }
+.tl { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); margin: 0 22px; }
+.tl-track { position: absolute; left: 12.5%; right: 12.5%; top: 8px; height: 2px; border-radius: 2px; background: var(--l-hair); }
+.tl-track i { display: block; height: 100%; width: 0; border-radius: 2px; background: linear-gradient(90deg, #B7D3AE, var(--sc)); transition: width .8s var(--ease); }
+.tl button { appearance: none; border: 0; background: none; cursor: pointer; display: grid; justify-items: center; gap: 8px; padding: 0 2px; font-size: 12.5px; font-weight: 500; color: var(--l-dim); transition: color .3s var(--ease); }
+.tl button span { width: 18px; height: 18px; border-radius: 50%; background: #111D10; border: 2px solid var(--l-faint); display: grid; place-items: center; transition: border-color .4s var(--ease), transform .4s var(--spring); }
+.tl button span::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c); transform: scale(0); transition: transform .4s var(--spring); }
+.tl button.past span { border-color: var(--c); }
+.tl button.past span::after { transform: scale(.7); }
+.tl button.on { color: var(--cream); }
+.tl button.on span { border-color: var(--c); transform: scale(1.2); }
+.tl button.on span::after { transform: scale(1); }
+.tl-cap { position: relative; z-index: 2; display: flex; align-items: center; gap: 10px; margin: 12px 24px 0; font-size: 10.5px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--l-dim); }
+.tl-cap::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--l-hair), transparent); }
+.legend-row { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.legend-row span { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: rgba(255, 252, 247, .8); }
+.legend-row i { width: 14px; height: 3px; border-radius: 3px; }
+.chain { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px; }
+.chain .arr { color: var(--ink-3); font-size: 13px; }
+.chain .chip { height: 28px; font-size: 12.5px; padding: 0 11px; }
+.sys-t { display: flex; align-items: baseline; gap: 10px; margin-top: 16px; }
+.sys-t b { font-family: var(--display); font-weight: 400; font-size: 1.35rem; color: var(--forest); }
+.sys-t span { font-size: 13px; color: var(--ink-3); }
+@media (max-width: 640px) { .tl button { font-size: 10.5px; } .tl-cap { display: none; } .t-lab { display: none; } }
 </style>
 </head>
 <body data-chapter="2">
@@ -85,88 +52,112 @@
       <p class="eyebrow reveal"><span class="dot"></span>Chapter 02 <span class="muted">/ 08 · Progression</span></p>
       <h1 class="display reveal" style="--i:1">How HPA dysfunction <em class="mark">evolves</em></h1>
     </div>
-    <p class="lede reveal" style="--i:2">The daily cortisol curve flattens in stages. Two systems respond to stress, and under chronic load the balance between them shifts.</p>
+    <div class="reveal" style="--i:2">
+      <p class="lede">The daily cortisol curve flattens in stages. Two systems respond to stress, and under chronic load the balance between them shifts.</p>
+      <div class="head-actions">
+        <a class="btn btn-primary btn-sm" href="#story">Begin<svg class="go" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v11M3.5 9 8 13.5 12.5 9"/></svg></a>
+        <button class="btn btn-ghost btn-sm" type="button" data-present><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1.8" y="2.5" width="12.4" height="8.5" rx="1.6"/><path d="M8 11v2.5M5.5 13.5h5"/><path d="M6.8 5.2v3.1L9.3 6.75z" fill="currentColor"/></svg>Present</button>
+        <span class="head-meta">6 steps</span>
+      </div>
+    </div>
   </header>
-
-  <section class="systems" aria-label="The two stress-response systems">
-    <div class="sys reveal">
-      <div class="sys-top"><span class="sys-abbr">SNS</span><span class="sys-name">Fast response</span><span class="chip soft">Seconds</span></div>
-      <div class="chain"><span class="chip">Sympathetic nervous system</span><span class="arr">→</span><span class="chip">Adrenal medulla</span><span class="arr">→</span><span class="chip solid">Adrenaline</span></div>
-    </div>
-    <div class="sys reveal" style="--i:1">
-      <div class="sys-top"><span class="sys-abbr">HPA</span><span class="sys-name">Self-limiting through negative feedback</span><span class="chip soft">Minutes to hours</span></div>
-      <div class="chain"><span class="chip">Hypothalamus</span><span class="arr">→</span><span class="chip">Pituitary</span><span class="arr">→</span><span class="chip">Adrenal cortex</span><span class="arr">→</span><span class="chip solid">Cortisol</span></div>
-    </div>
-  </section>
-
-  <section class="fig stages" id="stages" aria-label="The four stages of HPA dysfunction">
-    <div class="stage-chart">
-      <div class="fig-head">
-        <div class="stage-now" aria-live="polite">
-          <span class="label">Stage <span id="sNum">1</span> of 4 · daily cortisol curve</span>
-          <span class="stage-name" id="sName">Normal</span>
-        </div>
-        <button class="play" id="play" aria-pressed="true" aria-label="Auto-play stages">
-          <svg class="i-pause" viewBox="0 0 14 14" fill="currentColor"><rect x="3" y="2.5" width="2.6" height="9" rx="1"/><rect x="8.4" y="2.5" width="2.6" height="9" rx="1"/></svg>
-          <svg class="i-play" viewBox="0 0 14 14" fill="currentColor"><path d="M4 2.6v8.8a.6.6 0 0 0 .9.5l7-4.4a.6.6 0 0 0 0-1L4.9 2.1a.6.6 0 0 0-.9.5z"/></svg>
-          <span id="playLabel">Auto-play</span>
-        </button>
-      </div>
-      <div class="fig-body">
-        <div class="plot stage-plot">
-          <svg viewBox="0 0 640 330" role="img" aria-label="Daily cortisol curve for the selected stage, compared with the normal curve.">
-            <defs>
-              <linearGradient id="gFill" x1="0" x2="0" y1="0" y2="1"><stop class="cur-stop" offset="0" stop-opacity=".28"/><stop class="cur-stop" offset="1" stop-opacity=".02"/></linearGradient>
-            </defs>
-            <g stroke="#2C4E25" stroke-opacity=".08"><line x1="40" y1="105" x2="600" y2="105"/><line x1="40" y1="170" x2="600" y2="170"/><line x1="40" y1="235" x2="600" y2="235"/></g>
-            <line x1="40" y1="24" x2="40" y2="300" stroke="#17200F" stroke-opacity=".5"/>
-            <line x1="40" y1="300" x2="610" y2="300" stroke="#17200F" stroke-opacity=".5"/>
-            <text x="30" y="30" transform="rotate(-90 30 30)" text-anchor="end" font-family="Public Sans" font-size="11" font-weight="600" letter-spacing="1.6" fill="#75786E">CORTISOL</text>
-            <g class="fx-fade" style="--d:.2s">
-              <path id="curFill" fill="url(#gFill)" d="M 40 300 C 66.5 93.5, 108.1 40, 164.9 43.8 C 297.3 59.1, 448.6 223.5, 600 277.1 L 600 300 L 40 300 Z"/>
-            </g>
-            <path class="ghost" id="ghost" d="M 40 300 C 66.5 93.5, 108.1 40, 164.9 43.8 C 297.3 59.1, 448.6 223.5, 600 277.1" fill="none" stroke="#87A482" stroke-width="2" stroke-dasharray="4 7" opacity="0"/>
-            <text class="ghost" id="ghostLabel" x="176" y="30" font-family="Castoro" font-style="italic" font-size="17" fill="#6F9068" opacity="0">normal curve</text>
-            <path class="cur-line draw" id="curLine" pathLength="1" style="--d:.2s;--dur:1.3s" d="M 40 300 C 66.5 93.5, 108.1 40, 164.9 43.8 C 297.3 59.1, 448.6 223.5, 600 277.1" fill="none" stroke-width="5" stroke-linecap="round"/>
-            <g class="fx-pop" style="--d:1.3s"><circle class="end-dot" id="endDot" cx="600" cy="277.1" r="7" fill="#FFFEFB" stroke-width="3.5"/></g>
-          </svg>
-        </div>
-        <div class="axis-row" aria-hidden="true"><span>Wake</span><span>Midday</span><span>Bed</span></div>
-        <div class="timeline" role="tablist" aria-label="Stage" data-keys>
-          <div class="tl-track"><div class="tl-fill" id="tlFill"></div></div>
-          <button class="tl-stop" role="tab" data-s="0" style="--c:#6F9068"><span class="tl-dot"></span>Normal</button>
-          <button class="tl-stop" role="tab" data-s="1" style="--c:#C97A2B"><span class="tl-dot"></span>Acute</button>
-          <button class="tl-stop" role="tab" data-s="2" style="--c:#9B3B2E"><span class="tl-dot"></span>Chronic</button>
-          <button class="tl-stop" role="tab" data-s="3" style="--c:#5B6157"><span class="tl-dot"></span>Exhaustion</button>
-        </div>
-        <div class="tl-caption label">Time under chronic stress</div>
-      </div>
-    </div>
-
-    <ol class="stage-list" data-keys>
-      <li><button class="stage-item" data-s="0" style="--c:#6F9068" aria-selected="true">
-        <svg class="spark" viewBox="0 0 76 46"><path d="M 5 41 C 8 18, 12 7, 20 8 C 34 11, 52 34, 71 38"/></svg>
-        <span><span class="si-label label"><span class="d"></span>Stage 1</span><span class="si-name" style="display:block">Normal</span>
-        <p>A sharp morning rise, then a steady decline to a low at bedtime. Cortisol's own negative feedback switches off CRH once the job is done.</p></span>
-      </button></li>
-      <li><button class="stage-item" data-s="1" style="--c:#C97A2B" aria-selected="false">
-        <svg class="spark" viewBox="0 0 76 46"><path d="M 5 41 C 7 22, 10 15, 20 15 C 36 14, 54 17, 71 20"/></svg>
-        <span><span class="si-label label"><span class="d"></span>Stage 2</span><span class="si-name" style="display:block">Acute</span>
-        <p>Sympathetic hyperactivation drives exaggerated cortisol release. Cortisol stays high all day, yet its helpful actions begin to decline.</p></span>
-      </button></li>
-      <li><button class="stage-item" data-s="2" style="--c:#9B3B2E" aria-selected="false">
-        <svg class="spark" viewBox="0 0 76 46"><path d="M 5 41 C 6 32, 8 29, 13 29 C 32 29, 52 30, 71 32"/></svg>
-        <span><span class="si-label label"><span class="d"></span>Stage 3</span><span class="si-name" style="display:block">Chronic</span>
-        <p>CRH stops being the driver. Output drops and the curve flattens. Arginine vasopressin (AVP) takes over, and cortisol cannot switch it off.</p></span>
-      </button></li>
-      <li><button class="stage-item" data-s="3" style="--c:#5B6157" aria-selected="false">
-        <svg class="spark" viewBox="0 0 76 46"><path d="M 5 41 C 11 38, 16 37, 22 37 C 38 36, 55 36, 71 37"/></svg>
-        <span><span class="si-label label"><span class="d"></span>Stage 4</span><span class="si-name" style="display:block">Exhaustion</span>
-        <p>HPA reactivity fails and the cortisol response fades. The sympathetic system compensates with more activity: wired, but depleted.</p></span>
-      </button></li>
-    </ol>
-  </section>
 </main>
+
+<section class="story" id="story" aria-label="How HPA dysfunction evolves, step by step">
+  <div class="stage-col">
+    <div class="stage" id="stage">
+      <div class="stage-head">
+        <span class="stage-label" id="sLabel">Fig. 02 · The daily cortisol curve</span>
+      </div>
+      <div class="stage-canvas">
+        <svg viewBox="0 0 660 400" role="img" aria-label="Daily cortisol curve for the selected stage, compared with the normal curve.">
+          <defs>
+            <linearGradient id="gFill" x1="0" x2="0" y1="0" y2="1"><stop class="cur-stop" offset="0" stop-opacity=".32"/><stop class="cur-stop" offset="1" stop-opacity="0"/></linearGradient>
+            <filter id="glow" x="-20%" y="-40%" width="140%" height="180%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <g class="gridl"><line x1="50" y1="112" x2="620" y2="112"/><line x1="50" y1="188" x2="620" y2="188"/><line x1="50" y1="264" x2="620" y2="264"/></g>
+          <line class="ax" x1="50" y1="30" x2="50" y2="340"/>
+          <line class="ax" x1="50" y1="340" x2="624" y2="340"/>
+          <text class="t-lab" x="34" y="36" transform="rotate(-90 34 36)" text-anchor="end">CORTISOL</text>
+          <g class="t-lab"><text x="50" y="372">WAKE</text><text x="330" y="372" text-anchor="middle">MIDDAY</text><text x="610" y="372" text-anchor="end">BED</text></g>
+          <g class="cur" id="cur">
+            <g class="fx-fade" style="--d:.2s"><path id="curFill" fill="url(#gFill)" d="M 50 340 C 76.5 109.7, 118.1 50, 174.9 54.2 C 307.3 71.3, 458.6 254.7, 610 314.5 L 610 340 L 50 340 Z"/></g>
+            <path class="ghost" id="ghost" d="M 50 340 C 76.5 109.7, 118.1 50, 174.9 54.2 C 307.3 71.3, 458.6 254.7, 610 314.5" fill="none" stroke="#B7D3AE" stroke-opacity=".6" stroke-width="2" stroke-dasharray="4 7" opacity="0"/>
+            <text class="ghost t-ser t-it" id="ghostLabel" x="190" y="40" font-size="19" fill="#B7D3AE" opacity="0">normal curve</text>
+            <path class="cur-line draw" id="curLine" pathLength="1" style="--d:.2s;--dur:1.4s" d="M 50 340 C 76.5 109.7, 118.1 50, 174.9 54.2 C 307.3 71.3, 458.6 254.7, 610 314.5" fill="none" stroke-width="5.5" stroke-linecap="round" filter="url(#glow)"/>
+            <g class="fx-pop" style="--d:1.3s"><circle class="end-dot" id="endDot" cx="610" cy="314.5" r="8" fill="#111D10" stroke-width="4"/></g>
+          </g>
+          <g class="overlay" id="overlay" opacity="0" fill="none" stroke-width="3.5" stroke-linecap="round" filter="url(#glow)">
+            <path d="M 50 340 C 76.5 109.7, 118.1 50, 174.9 54.2 C 307.3 71.3, 458.6 254.7, 610 314.5" stroke="#B7D3AE"/>
+            <path d="M 50 340 C 68.9 152.4, 99.2 96.9, 174.9 92.6 C 326.2 88.4, 477.6 113.9, 610 143.8" stroke="#F2B46E"/>
+            <path d="M 50 340 C 61.4 263.3, 80.3 237.6, 118.1 237.6 C 288.4 237.6, 458.6 250.4, 610 267.5" stroke="#EE8B75"/>
+            <path d="M 50 340 C 80 322.2, 120 308.8, 175 306.5 C 310 302.1, 460 299.8, 610 305.4" stroke="#C9CDC2"/>
+          </g>
+        </svg>
+      </div>
+      <div class="tl" id="tl">
+        <div class="tl-track"><i id="tlFill"></i></div>
+        <button type="button" data-s="0" style="--c:#B7D3AE"><span></span>Normal</button>
+        <button type="button" data-s="1" style="--c:#F2B46E"><span></span>Acute</button>
+        <button type="button" data-s="2" style="--c:#EE8B75"><span></span>Chronic</button>
+        <button type="button" data-s="3" style="--c:#C9CDC2"><span></span>Exhaustion</button>
+      </div>
+      <div class="tl-cap">Time under chronic stress</div>
+      <div class="stage-foot">
+        <div class="readout" id="readout" aria-live="polite"><span class="d"></span><span id="rText"><b>Normal</b> · Stage 1 of 4</span></div>
+        <div class="stepper">
+          <button class="sbtn" type="button" data-step-prev aria-label="Previous step"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg></button>
+          <div class="dots"></div>
+          <button class="sbtn" type="button" data-step-next aria-label="Next step"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="present-top"><img src="assets/img/optimal-wordmark-green.png" alt="Optimal"><span class="pt-label">Chapter 02 · Progression</span><button class="present-close" type="button" data-present-exit><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>Exit<kbd>Esc</kbd></button></div>
+
+    <article class="step"><div class="step-inner">
+      <span class="step-n"></span>
+      <h2>Two systems respond to stress</h2>
+      <div class="sys-t"><b>SNS</b><span>Seconds</span></div>
+      <div class="chain"><span class="chip">Sympathetic nervous system</span><span class="arr">→</span><span class="chip">Adrenal medulla</span><span class="arr">→</span><span class="chip solid">Adrenaline</span></div>
+      <div class="sys-t"><b>HPA</b><span>Minutes to hours</span></div>
+      <div class="chain"><span class="chip">Hypothalamus</span><span class="arr">→</span><span class="chip">Pituitary</span><span class="arr">→</span><span class="chip">Adrenal cortex</span><span class="arr">→</span><span class="chip solid">Cortisol</span></div>
+      <p>The HPA response is self-limiting through negative feedback. On the right is its normal daily rhythm.</p>
+    </div></article>
+
+    <article class="step"><div class="step-inner">
+      <span class="step-n"></span>
+      <h2>Stage 1 · Normal</h2>
+      <p>A sharp morning rise, then a steady decline to a low at bedtime. Cortisol's own negative feedback switches off CRH once the job is done.</p>
+    </div></article>
+
+    <article class="step"><div class="step-inner">
+      <span class="step-n"></span>
+      <h2>Stage 2 · Acute</h2>
+      <p>Sympathetic hyperactivation drives exaggerated cortisol release. Cortisol stays high all day, yet its helpful actions begin to decline.</p>
+    </div></article>
+
+    <article class="step"><div class="step-inner">
+      <span class="step-n"></span>
+      <h2>Stage 3 · Chronic</h2>
+      <p>CRH stops being the driver. Output drops and the curve flattens. Arginine vasopressin (AVP) takes over, and cortisol cannot switch it off.</p>
+    </div></article>
+
+    <article class="step"><div class="step-inner">
+      <span class="step-n"></span>
+      <h2>Stage 4 · Exhaustion</h2>
+      <p>HPA reactivity fails and the cortisol response fades. The sympathetic system compensates with more activity: wired, but depleted.</p>
+    </div></article>
+
+    <article class="step"><div class="step-inner">
+      <span class="step-n"></span>
+      <h2>The curve flattens in stages</h2>
+      <p>Under chronic load the balance between the two systems shifts. Side by side, the four curves show the daily rhythm losing its shape: from a clear morning peak to a flat line.</p>
+    </div></article>
+  </div>
+</section>
 
 <div id="end"></div>
 <div id="foot"></div>
@@ -174,56 +165,49 @@
 <script>
 (function () {
   var S = [
-    { name: 'Normal', color: '#6F9068', d: 'M 40 300 C 66.5 93.5, 108.1 40, 164.9 43.8 C 297.3 59.1, 448.6 223.5, 600 277.1', end: 277.1 },
-    { name: 'Acute', color: '#C97A2B', d: 'M 40 300 C 58.9 131.8, 89.2 82.1, 164.9 78.2 C 316.2 74.4, 467.6 97.3, 600 124.1', end: 124.1 },
-    { name: 'Chronic', color: '#9B3B2E', d: 'M 40 300 C 51.4 231.2, 70.3 208.2, 108.1 208.2 C 278.4 208.2, 448.6 219.7, 600 235', end: 235 },
-    { name: 'Exhaustion', color: '#5B6157', d: 'M 40 300 C 70 284, 110 272, 165 270 C 300 266, 450 264, 600 269', end: 269 }
+    { name: 'Normal', c: '#B7D3AE', d: 'M 50 340 C 76.5 109.7, 118.1 50, 174.9 54.2 C 307.3 71.3, 458.6 254.7, 610 314.5', end: 314.5 },
+    { name: 'Acute', c: '#F2B46E', d: 'M 50 340 C 68.9 152.4, 99.2 96.9, 174.9 92.6 C 326.2 88.4, 477.6 113.9, 610 143.8', end: 143.8 },
+    { name: 'Chronic', c: '#EE8B75', d: 'M 50 340 C 61.4 263.3, 80.3 237.6, 118.1 237.6 C 288.4 237.6, 458.6 250.4, 610 267.5', end: 267.5 },
+    { name: 'Exhaustion', c: '#C9CDC2', d: 'M 50 340 C 80 322.2, 120 308.8, 175 306.5 C 310 302.1, 460 299.8, 610 305.4', end: 305.4 }
   ];
-  var fig = document.getElementById('stages');
-  var line = document.getElementById('curLine'), fill = document.getElementById('curFill');
-  var dot = document.getElementById('endDot');
-  var stops = [].slice.call(document.querySelectorAll('.tl-stop'));
-  var items = [].slice.call(document.querySelectorAll('.stage-item'));
-  var playBtn = document.getElementById('play');
-  var cur = 0, endY = S[0].end, timer = null, first = true;
+  var $ = function (id) { return document.getElementById(id); };
+  var stage = $('stage'), line = $('curLine'), fill = $('curFill'), dot = $('endDot');
+  var tlb = [].slice.call(document.querySelectorAll('#tl button'));
+  var cur = 0, endY = S[0].end, first = true;
 
-  function set(i) {
-    if (i === cur && !first) return;
-    var initial = first;
-    first = false;
+  function set(i, ghost) {
     var from = endY, to = S[i].end;
-    cur = i;
-    fig.style.setProperty('--sc', S[i].color);
-    document.getElementById('sNum').textContent = i + 1;
-    document.getElementById('sName').textContent = S[i].name;
-    if (!initial) {
+    stage.style.setProperty('--sc', S[i].c);
+    stage.style.setProperty('--rc', S[i].c);
+    if (!first) {
       line.classList.remove('draw'); line.style.strokeDasharray = 'none';
       HX.morph(line, S[i].d, 950);
-      HX.morph(fill, S[i].d + ' L 600 300 L 40 300 Z', 950);
+      HX.morph(fill, S[i].d + ' L 610 340 L 50 340 Z', 950);
       HX.tween(950, function (e) { endY = from + (to - from) * e; dot.setAttribute('cy', endY); });
     }
-    ['ghost', 'ghostLabel'].forEach(function (id) { document.getElementById(id).setAttribute('opacity', i === 0 ? '0' : id === 'ghost' ? '1' : '.9'); });
-    document.getElementById('tlFill').style.width = (i / 3 * 100) + '%';
-    stops.forEach(function (b, k) { b.setAttribute('aria-selected', k === i); b.classList.toggle('is-past', k < i); });
-    items.forEach(function (b, k) { b.setAttribute('aria-selected', k === i); });
+    first = false;
+    cur = i;
+    ['ghost', 'ghostLabel'].forEach(function (id) { $(id).setAttribute('opacity', ghost ? '1' : '0'); });
+    $('tlFill').style.width = (i / 3 * 100) + '%';
+    tlb.forEach(function (b, k) { b.classList.toggle('on', k === i); b.classList.toggle('past', k < i); });
+    $('rText').innerHTML = '<b>' + S[i].name + '</b> · Stage ' + (i + 1) + ' of 4';
   }
-  function setPlaying(on) {
-    playBtn.setAttribute('aria-pressed', on);
-    document.getElementById('playLabel').textContent = on ? 'Auto-play' : 'Play';
-    clearInterval(timer);
-    if (on) timer = setInterval(function () { set((cur + 1) % 4); }, 3400);
+  function overlay(on) {
+    $('overlay').setAttribute('opacity', on ? '1' : '0');
+    $('cur').setAttribute('opacity', on ? '0' : '1');
+    if (on) {
+      $('rText').innerHTML = '<span class="legend-row">' + S.map(function (s) { return '<span><i style="background:' + s.c + '"></i>' + s.name + '</span>'; }).join('') + '</span>';
+      tlb.forEach(function (b) { b.classList.add('past'); b.classList.remove('on'); });
+      $('tlFill').style.width = '100%';
+      stage.style.setProperty('--rc', 'transparent');
+    }
   }
-  function choose(i) { setPlaying(false); set(i); }
-  stops.concat(items).forEach(function (b) {
-    b.addEventListener('click', function () { choose(+b.getAttribute('data-s')); });
-    b.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); choose(Math.min(3, cur + 1)); }
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); choose(Math.max(0, cur - 1)); }
-    });
-  });
-  playBtn.addEventListener('click', function () { var on = playBtn.getAttribute('aria-pressed') !== 'true'; if (on && cur === 3) set(0); setPlaying(on); });
-  set(0);
-  HX.onReveal(fig, function () { if (HX.reduce) { setPlaying(false); return; } setTimeout(function () { if (playBtn.getAttribute('aria-pressed') === 'true') setPlaying(true); }, 1400); });
+  var story = HX.story({ onStep: function (i) {
+    if (i === 5) { overlay(true); return; }
+    overlay(false);
+    set(i === 0 ? 0 : i - 1, i > 1);
+  } });
+  tlb.forEach(function (b, k) { b.addEventListener('click', function () { story.go(k + 1); }); });
 })();
 </script>
 </body>

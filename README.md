@@ -1,54 +1,68 @@
 # Hormone Explainers
 
-Interactive patient-education microsite from **Optimal**: eight short explainers on cortisol, sleep and the hormone system, adapted from clinician notes and hand-drawn sketches.
+Guided, interactive patient-education stories from **Optimal**: eight short chapters on cortisol, sleep and the hormone system, adapted from clinician notes and hand-drawn sketches.
 
 **Live site:** https://optimal-research-team.github.io/hormone-explainers/
 
+## What it is
+
+Each chapter is a **scroll-driven story**. The diagram sits on a dark "night garden" stage that stays pinned while short narrative steps scroll past, and every step drives the diagram. Readers can still hover, tap and drag the diagram at any point.
+
+**Present mode** is for the exam room. Press **Present** (in the nav or the chapter header) and the chapter fills the screen with one step at a time.
+
+| Key | Action |
+|-----|--------|
+| → · Space · PageDown | Next step (continues into the next chapter) |
+| ← · PageUp | Previous step |
+| F | Toggle full screen |
+| Esc | Exit Present mode |
+
+Presentation clickers send PageUp/PageDown, so they work out of the box. Links such as `01-dose-response.html?present` open straight into Present mode.
+
 ## The chapters
 
-Every chapter has a working diagram, not a static picture. Hover, or tap on touch screens, to explore; click to pin a highlight.
+| # | Chapter | Story |
+|---|---------|-------|
+| 01 | Cortisol has a dose-dependent effect | A draggable marker on a luminous dose–response curve visits too little, just right and too much in turn. |
+| 02 | How HPA dysfunction evolves | Introduces the two stress systems (SNS and HPA). The daily curve then morphs through Normal → Acute → Chronic → Exhaustion, and the chapter ends with all four overlaid. |
+| 03 | Three ways to measure cortisol | Awakening response, diurnal slope and area under the curve light up one at a time. Then the curve flattens and every measure turns "concerning". |
+| 04 | Cortisol's partners | A stress-axis diagram marks exactly where each group of partners acts. A second scene shows the melatonin–cortisol see-saw across morning, evening and a stressed evening. |
+| 05 | Foundational vs. top-line hormones | Canopy, trunk and roots in turn. The roots are then stressed and the canopy wilts, before the story returns to the roots. |
+| 06 | The hormone cycle and its stop points | A particle circulates the loop. Each step halts it at one stop and shows the tools used there. |
+| 07 | Sleep, cortisol and the hormone web | Twelve connections grouped into five steps (sleep, melatonin, insulin resistance, sex hormones, mood), ending on sleep's reach. |
+| 08 | The pyramid of interventions | The pyramid builds itself one layer per step, from sleep at the base to supplements at the top. |
 
-| # | Chapter | Interaction |
-|---|---------|-------------|
-| 01 | Cortisol has a dose-dependent effect | Drag a cortisol level along the dose–response curve. The live readout and the matching zone card (too little / just right / too much) update as you move. |
-| 02 | How HPA dysfunction evolves | One chart morphs through Normal → Acute → Chronic → Exhaustion against a ghost "normal" curve. Auto-plays, with a stage timeline and a stage list with sparklines. |
-| 03 | Three ways to measure cortisol | Awakening response, diurnal slope and area under the curve are linked to their cards. A Healthy / Flattened toggle reshapes the curve and flips each healthy/concerning status. |
-| 04 | Cortisol's partners | A stress-axis diagram (hypothalamus → pituitary → adrenal → tissues, with negative-feedback arcs). Hover any molecule to mark where it acts. Includes a morning / evening / stressed-evening melatonin–cortisol see-saw. |
-| 05 | Foundational vs. top-line hormones | A hormone tree (sex-hormone canopy, insulin trunk, cortisol and thyroid roots) linked to the three tiers. "Stressed roots" wilts the canopy. |
-| 06 | The hormone cycle and its stop points | A particle circulates the six-stop loop. Choosing a stop halts it there, fades the rest of the loop, and shows the tools used at that point. |
-| 07 | Sleep, cortisol and the hormone web | Twelve numbered connections. Hover a hormone to see everything it touches, or a note to trace one link. "Where sleep reaches" pins sleep's influence. The diagram stays in view (sticky) while the notes scroll. |
-| 08 | The pyramid of interventions | An HTML pyramid where each layer is its own row, so layers and text always align at any width. It builds from the base up. |
-
-The landing page has an animated, illustrative 24-hour cortisol / melatonin rhythm on a frosted-glass panel, and a bento grid with a live preview of each chapter.
+The **landing page** opens on a full-bleed, scrubbable illustrative 24-hour rhythm: move across the chart to watch cortisol and melatonin trade places as the sky glow shifts with the time of day. Below it are a bento grid of chapter previews, a "For the exam room" section and a closing call to action.
 
 ## Architecture
 
-Static HTML, CSS and JS: no framework and no build step.
+Static HTML, CSS and JS, with no framework and no build step. Deployed with GitHub Pages.
 
 ```
-index.html                    Landing: hero rhythm, bento series grid, guide, closing band
-01-…html … 08-…html           One page per chapter (markup + a small page script)
-assets/css/site.css           Design system: tokens, nav, figures, controls, motion
-assets/js/site.js             Shared chrome + interaction engine (see below)
+index.html                    Landing: scrubbable day hero, series bento, exam-room section, closing band
+01-…html … 08-…html           One chapter each: hero + .story (sticky .stage + .steps) + page script
+assets/css/site.css           Design system: tokens, nav, story/stage layout, Present mode, motion
+assets/js/site.js             Shared engine (see below)
 assets/img/                   Optimal wordmarks, symbol, canopy photography
 .github/workflows/deploy.yml  GitHub Pages deployment
 ```
 
 ### `site.js`
 
-- **Chrome.** Builds the floating nav (brand, chapter progress with tooltips, prev/next, all chapters), the "Up next" card and the footer from one `CHAPTERS` config. Each page just sets `<body data-chapter="N">`.
-- **Linked highlighting.** Inside any `[data-links]` scope, elements with `data-t="key"` are triggers and every element whose `data-k` list contains the key gets `.is-on`. The scope gets `.has-focus`, which dims everything else. It supports mouse hover, keyboard focus, and click or tap to pin, and emits a `focuskey` event for page-specific behaviour (for example, chapter 06 halting the particle).
-- **Helpers.** `HX.morph()` tweens SVG path data between shapes with identical command structure; `HX.tween()`, `HX.sampler()` (y-at-x lookup on a path) and `HX.onReveal()`.
-- **Reveal and motion.** IntersectionObserver-driven entrances, SVG stroke draw-ins (`pathLength="1"`), and a procedurally drawn hand-drawn ellipse around the italic title word (the beoptimal.ca motif), sized to the word by ResizeObserver.
-- **Keyboard.** ← / → move between chapters; controls that use arrow keys opt out with `data-keys`.
-- **Accessibility.** Reduced-motion support throughout, focus-visible rings, ARIA-pressed and selected states, and live regions on readouts.
+- **Chrome.** The floating glass nav shows chapter progress, a reading-progress fill and a Present button. It also renders the "Up next" card and the footer, all from one `CHAPTERS` config. Pages set `<body data-chapter="N">`.
+- **Story engine.** `HX.story({ onStep })` wires `.story`. An IntersectionObserver activates the step crossing a trigger line; on mobile, the line sits just below the pinned stage. The stage stepper (‹ • • • ›) and Present mode drive the same `go(i)`.
+- **Present mode.** Adds a `present` class to `body`, handles keyboard and clicker input, and hands off between chapters using `?present` / `?present=last`.
+- **Linked highlighting.** Inside `[data-links]`, elements with `data-t` are triggers and elements whose `data-k` contains an active key get `.is-on`. Active keys are, in priority order: hover, click-pin, then the story's base keys (`_links.setBase([...])`).
+- **Helpers.** `HX.morph()` (SVG path tweening), `HX.tween()`, `HX.sampler()` (y at x along a path) and `HX.onReveal()`, plus a procedurally drawn hand-drawn ellipse around the title word (the beoptimal.ca motif).
+- **URL flags.** `?step=N` opens a chapter at step N. `?still` disables all motion, which is useful for screenshots and for checking final states.
+- **Accessibility.** Reduced-motion support, keyboard access for every control, ARIA states, and live regions on readouts.
 
 ### Design system
 
-- Optimal brand: cream `#FFFCF7`, forest `#2C4E25`, sage `#87A482`, amber `#C97A2B`, brick `#9B3B2E`, navy `#182E6C`
-- Type: Castoro (display) and Public Sans (UI) from Google Fonts
-- Floating glass pill nav and rounded photo cards with pill badges, matching beoptimal.ca; subtle paper grain; layered soft shadows; dotted plot grids
-- Responsive from 375px up. Dense diagrams scroll sideways inside their card on phones.
+- Optimal brand: cream `#FFFCF7` and forest `#2C4E25` for reading surfaces. Diagrams use a luminous palette (sage `#B7D3AE`, amber `#F2B46E`, periwinkle `#AEBEF1`, coral `#EE8B75`) on a dark forest stage textured with the Optimal canopy photograph.
+- Type: Castoro (display) and Public Sans (UI).
+- The floating glass pill nav, the italic-word ellipse motif and the photo cards follow beoptimal.ca.
+- Cross-document view transitions between chapters (Chromium, Safari 18+).
 
 ## Development
 
