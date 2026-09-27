@@ -1,62 +1,67 @@
 # Hormone Explainers
 
-Animated patient-education microsite from **Optimal** — eight short visual explainers on cortisol, sleep and the hormone system, adapted from hand-drawn clinician sketches.
+Interactive patient-education microsite from **Optimal**: eight short explainers on cortisol, sleep and the hormone system, adapted from clinician notes and hand-drawn sketches.
 
 **Live site:** https://optimal-research-team.github.io/hormone-explainers/
 
-## The explainers
+## The chapters
 
-| # | Title | Animated visual |
-|---|-------|-----------------|
-| 01 | Cortisol has a dose-dependent effect | Dose–response bell curve draws in; deficiency / optimal / excess zones fade up; pulsing marker on the healthy midpoint |
-| 02 | How HPA dysfunction evolves | Four daily-cortisol curves draw in sequence — Normal → Acute → Chronic → Exhaustion |
-| 03 | Three ways to measure cortisol | One day of salivary cortisol draws in; CAR, diurnal slope and AUC markers pop in sync with their explanation cards |
-| 04 | Cortisol's partners | Staggered ledger of suppressors; a continuously rocking melatonin-vs-cortisol see-saw |
-| 05 | Foundational vs. top-line hormones | The hormone tree grows: roots draw first, the trunk rises, the canopy breathes |
-| 06 | The hormone cycle and its stop points | The loop's arrows draw around the ring one stop at a time; marching-dash guide circle; numbered stop points pop in |
-| 07 | Sleep, cortisol and the hormone web | Nodes appear, connections wire in, the heavy "problem" edges pulse |
-| 08 | The pyramid of interventions | The pyramid builds itself from the base up, most-impactful layer first |
+Every chapter has a working diagram, not a static picture. Hover, or tap on touch screens, to explore; click to pin a highlight.
+
+| # | Chapter | Interaction |
+|---|---------|-------------|
+| 01 | Cortisol has a dose-dependent effect | Drag a cortisol level along the dose–response curve. The live readout and the matching zone card (too little / just right / too much) update as you move. |
+| 02 | How HPA dysfunction evolves | One chart morphs through Normal → Acute → Chronic → Exhaustion against a ghost "normal" curve. Auto-plays, with a stage timeline and a stage list with sparklines. |
+| 03 | Three ways to measure cortisol | Awakening response, diurnal slope and area under the curve are linked to their cards. A Healthy / Flattened toggle reshapes the curve and flips each healthy/concerning status. |
+| 04 | Cortisol's partners | A stress-axis diagram (hypothalamus → pituitary → adrenal → tissues, with negative-feedback arcs). Hover any molecule to mark where it acts. Includes a morning / evening / stressed-evening melatonin–cortisol see-saw. |
+| 05 | Foundational vs. top-line hormones | A hormone tree (sex-hormone canopy, insulin trunk, cortisol and thyroid roots) linked to the three tiers. "Stressed roots" wilts the canopy. |
+| 06 | The hormone cycle and its stop points | A particle circulates the six-stop loop. Choosing a stop halts it there, fades the rest of the loop, and shows the tools used at that point. |
+| 07 | Sleep, cortisol and the hormone web | Twelve numbered connections. Hover a hormone to see everything it touches, or a note to trace one link. "Where sleep reaches" pins sleep's influence. The diagram stays in view (sticky) while the notes scroll. |
+| 08 | The pyramid of interventions | An HTML pyramid where each layer is its own row, so layers and text always align at any width. It builds from the base up. |
+
+The landing page has an animated, illustrative 24-hour cortisol / melatonin rhythm on a frosted-glass panel, and a bento grid with a live preview of each chapter.
 
 ## Architecture
 
-Pure static HTML/CSS/JS — no framework, no build step.
+Static HTML, CSS and JS: no framework and no build step.
 
 ```
-index.html                      Landing grid of the eight explainers
-01-…html … 08-…html             One self-contained page per explainer
-assets/site.css                 Shared animation system + interactive styles
-assets/fit.js                   1920×1080 stage scaling + arrow-key navigation
-assets/symbol-green.png         Optimal mark / favicon
-.github/workflows/deploy.yml    GitHub Pages deployment
+index.html                    Landing: hero rhythm, bento series grid, guide, closing band
+01-…html … 08-…html           One page per chapter (markup + a small page script)
+assets/css/site.css           Design system: tokens, nav, figures, controls, motion
+assets/js/site.js             Shared chrome + interaction engine (see below)
+assets/img/                   Optimal wordmarks, symbol, canopy photography
+.github/workflows/deploy.yml  GitHub Pages deployment
 ```
 
-### How it works
+### `site.js`
 
-- **Stage scaling** — every page is authored on a fixed 1920×1080 stage, scaled to fit any viewport via a single CSS `transform: scale(var(--s))` set by `fit.js`. Layouts never reflow; typography stays exactly as designed on every screen.
-- **Animation system** — shared utility classes in `site.css`: `.a-rise`, `.a-fade`, `.a-pop` (entrances, delay via `--d`), `.stag` (staggered children, offset via `--sd`), `.draw` (SVG stroke draw-in using `pathLength="1"` normalization), and `.circ` (the hand-drawn ellipse around a title word). Page-specific loops (the see-saw, pulses, marching dashes) live in each page's `<style>` block.
-- **Reduced motion** — all animation collapses to instant under `prefers-reduced-motion: reduce`.
-- **Navigation** — every explainer has All-explainers / Next pills, and ← / → arrow keys walk the whole sequence like a deck.
+- **Chrome.** Builds the floating nav (brand, chapter progress with tooltips, prev/next, all chapters), the "Up next" card and the footer from one `CHAPTERS` config. Each page just sets `<body data-chapter="N">`.
+- **Linked highlighting.** Inside any `[data-links]` scope, elements with `data-t="key"` are triggers and every element whose `data-k` list contains the key gets `.is-on`. The scope gets `.has-focus`, which dims everything else. It supports mouse hover, keyboard focus, and click or tap to pin, and emits a `focuskey` event for page-specific behaviour (for example, chapter 06 halting the particle).
+- **Helpers.** `HX.morph()` tweens SVG path data between shapes with identical command structure; `HX.tween()`, `HX.sampler()` (y-at-x lookup on a path) and `HX.onReveal()`.
+- **Reveal and motion.** IntersectionObserver-driven entrances, SVG stroke draw-ins (`pathLength="1"`), and a procedurally drawn hand-drawn ellipse around the italic title word (the beoptimal.ca motif), sized to the word by ResizeObserver.
+- **Keyboard.** ← / → move between chapters; controls that use arrow keys opt out with `data-keys`.
+- **Accessibility.** Reduced-motion support throughout, focus-visible rings, ARIA-pressed and selected states, and live regions on readouts.
 
 ### Design system
 
-- Type: Castoro (display) + Public Sans (UI), via Google Fonts
-- Palette: cream `#FFFCF7`, forest `#2C4E25`, sage `#87A482`, amber `#C97A2B`, brick `#9B3B2E`, navy `#182E6C`
-- 1920×1080 frame, generous margins, oversized ghost numerals per chapter
+- Optimal brand: cream `#FFFCF7`, forest `#2C4E25`, sage `#87A482`, amber `#C97A2B`, brick `#9B3B2E`, navy `#182E6C`
+- Type: Castoro (display) and Public Sans (UI) from Google Fonts
+- Floating glass pill nav and rounded photo cards with pill badges, matching beoptimal.ca; subtle paper grain; layered soft shadows; dotted plot grids
+- Responsive from 375px up. Dense diagrams scroll sideways inside their card on phones.
 
 ## Development
 
-Any static file server works:
-
 ```bash
-python3 -m http.server 3041 --directory .
+python3 -m http.server 3041
 ```
 
 Then open http://localhost:3041.
 
 ## Deployment
 
-Pushes to `main` deploy automatically to GitHub Pages via `.github/workflows/deploy.yml` (upload-pages-artifact → deploy-pages).
+Pushes to `main` deploy to GitHub Pages via `.github/workflows/deploy.yml`.
 
 ## Disclaimer
 
-For education only — not a substitute for individual medical advice. Medication names appear for discussion with a provider, not as recommendations.
+For education only, not a substitute for individual medical advice. Medication names are for discussion with a provider, not recommendations. The landing-page rhythm is illustrative, not patient data.

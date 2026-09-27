@@ -4,92 +4,171 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The hormone cycle and its stop points · Hormone Explainers</title>
-<meta name="description" content="Hormones feed each other in a loop — six places to interrupt it, with the tools most often used at each. Explainer 06 of 08.">
-<link rel="icon" href="assets/symbol-green.png">
+<meta name="description" content="Hormones feed each other in a loop, with six places to interrupt it and the tools used at each. Chapter 06 of 08.">
+<meta name="theme-color" content="#FFFCF7">
+<link rel="icon" href="assets/img/symbol-green.png">
+<script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css">
+<link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Public+Sans:ital,wght@0,300..700;1,400..500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
 <style>
-.ring { opacity: 0; animation: fadeIn 1.2s ease .4s both, march 40s linear 1.6s infinite; }
-@keyframes march { to { stroke-dashoffset: -240; } }
-.arc { stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; animation: arcIn .8s cubic-bezier(.55,.08,.35,1) both; animation-delay: var(--d, 0s); }
-@keyframes arcIn { 0% { opacity: 0; stroke-dashoffset: 1; } 12% { opacity: 1; } 100% { opacity: 1; stroke-dashoffset: 0; } }
+.cycle { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
+.c-ring { border-right: 1px solid var(--line); min-width: 0; display: flex; flex-direction: column; }
+.c-ring .fig-body { flex: 1; display: grid; place-items: center; }
+.ring-svg { width: 100%; max-width: 560px; height: auto; overflow: visible; }
+.arc { transition: opacity .45s var(--ease), stroke .45s var(--ease); }
+.arc.cut { opacity: .18; }
+.stop-node { cursor: pointer; }
+.stop-node rect { fill: #FFFEFB; stroke: var(--forest); stroke-width: 1.5; transition: fill .3s var(--ease), stroke .3s var(--ease), stroke-width .3s var(--ease); }
+.stop-node text { font-family: var(--display); font-size: 23px; fill: var(--forest); }
+.stop-node:hover rect, .stop-node.is-on rect { fill: var(--amber-wash); stroke: var(--amber); stroke-width: 2.5; }
+.particle { transition: fill .4s var(--ease); }
+.halted .particle { fill: #9B3B2E; }
+.halo { transform-box: fill-box; transform-origin: center; opacity: 0; }
+.halted .halo { animation: hx-pulse 1.5s ease-out infinite; }
+.center-a { font-family: var(--display); font-style: italic; font-size: 26px; fill: var(--forest); }
+.center-b { font-family: var(--display); font-size: 34px; fill: var(--brick); letter-spacing: -.02em; }
+
+.c-list { padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+.c-list .row { grid-template-columns: 30px minmax(0, 200px) 1fr; align-items: center; padding: 15px 18px; }
+.c-list .row-title { font-size: 1.3rem; }
+.c-list .row p { font-size: 14.5px; }
+.c-list .row.is-pinned .nb, .c-list .row.is-on .nb { background: var(--brick); }
+.c-list .nb { transition: background .3s var(--ease); }
+.caution { display: flex; gap: 10px; align-items: flex-start; margin: auto 4px 0; padding: 14px 16px; border-radius: 14px; background: var(--linen); font-size: 13.5px; color: var(--ink-2); }
+.caution svg { width: 16px; height: 16px; flex: none; margin-top: 2px; color: var(--amber); }
+
+@media (max-width: 1040px) {
+  .cycle { grid-template-columns: 1fr; }
+  .c-ring { border-right: 0; border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 640px) { .c-list .row { grid-template-columns: 30px 1fr; } .c-list .row p { grid-column: 2; } }
 </style>
 </head>
-<body data-prev="05-hormone-tree.html" data-next="07-sleep-hormone-web.html">
-<div class="stage-wrap"><div class="stage">
-<div style="width:1920px;height:1080px;box-sizing:border-box;padding:76px 104px 60px;display:flex;flex-direction:column;font-family:'Public Sans',sans-serif;letter-spacing:-0.02em;background:#FFFCF7;position:relative;overflow:hidden;">
-  <div class="a-fade" style="--d:.15s;position:absolute;right:88px;top:-40px;font-family:Castoro,serif;font-size:420px;line-height:1;letter-spacing:-0.06em;color:rgba(44,78,37,0.05);pointer-events:none;">06</div>
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;position:relative;">
+<body data-chapter="6" data-note="Adapted from clinician notes. Medication names are for discussion with your provider, not a recommendation.">
+<div id="nav" class="nav-wrap"></div>
+
+<main class="page">
+  <header class="chapter-head">
     <div>
-      <div class="a-rise" style="--d:.05s;font-size:14px;font-weight:500;letter-spacing:0.14em;color:#2C4E25;margin-bottom:22px;display:flex;align-items:center;gap:14px;"><span style="width:32px;height:1px;background:#2C4E25;display:inline-block;"></span>HORMONE EXPLAINERS · 06 OF 08</div>
-      <h1 class="a-rise" style="--d:.12s;font-family:Castoro,serif;font-weight:400;font-size:84px;line-height:0.98;letter-spacing:-0.045em;margin:0;color:#2C4E25;">The hormone cycle and its <span style="position:relative;display:inline-block;font-style:italic;">stop points<span class="circ" style="--d:.9s;position:absolute;left:-16px;right:-16px;top:-4px;bottom:-12px;border:1.5px solid rgba(26,80,18,0.5);border-radius:50%;transform:rotate(-2deg);"></span></span></h1>
+      <p class="eyebrow reveal"><span class="dot"></span>Chapter 06 <span class="muted">/ 08 · Interventions</span></p>
+      <h1 class="display reveal" style="--i:1">The hormone cycle and its <em class="mark">stop points</em></h1>
     </div>
-    <img class="a-fade" style="--d:.5s;height:52px;width:auto;margin-top:2px;" src="assets/symbol-green.png" alt="Optimal">
-  </div>
-  <p class="a-rise" style="--d:.28s;font-size:26px;line-height:1.35;max-width:1150px;margin:26px 0 0;color:#3d3d3a;position:relative;">Hormones feed each other in a loop, so a problem in one spreads to the rest. Each stop on the ring is a place where the loop can be interrupted, with the tools most often used there.</p>
+    <p class="lede reveal" style="--i:2">Hormones feed each other in a loop, so a problem in one spreads to the rest. Each stop on the ring is a place where the loop can be interrupted, with the tools most often used there.</p>
+  </header>
 
-  <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.15fr;gap:40px;margin-top:28px;position:relative;">
-    <svg viewBox="0 0 640 620" style="width:100%;height:100%;display:block;">
-      <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2C4E25"></path></marker></defs>
-      <circle class="ring" cx="320" cy="310" r="220" fill="none" stroke="#2C4E25" stroke-opacity="0.18" stroke-width="1.5" stroke-dasharray="3 9"></circle>
-      <g fill="none" stroke="#2C4E25" stroke-width="2" marker-end="url(#ah)">
-        <path class="arc" pathLength="1" style="--d:.75s" d="M 372 96 A 220 220 0 0 1 508 194"></path>
-        <path class="arc" pathLength="1" style="--d:1s" d="M 538 262 A 220 220 0 0 1 538 358"></path>
-        <path class="arc" pathLength="1" style="--d:1.25s" d="M 508 426 A 220 220 0 0 1 372 524"></path>
-        <path class="arc" pathLength="1" style="--d:1.5s" d="M 268 524 A 220 220 0 0 1 132 426"></path>
-        <path class="arc" pathLength="1" style="--d:1.75s" d="M 102 358 A 220 220 0 0 1 102 262"></path>
-        <path class="arc" pathLength="1" style="--d:2s" d="M 132 194 A 220 220 0 0 1 268 96"></path>
-      </g>
-      <g fill="#FFFFFF" stroke="#2C4E25" stroke-width="1.5">
-        <rect class="a-fade" style="--d:.55s" x="235" y="62" width="170" height="56" rx="28"></rect>
-        <rect class="a-fade" style="--d:.8s" x="435" y="200" width="200" height="56" rx="28"></rect>
-        <rect class="a-fade" style="--d:1.05s" x="445" y="362" width="180" height="56" rx="28"></rect>
-        <rect class="a-fade" style="--d:1.3s" x="200" y="500" width="240" height="56" rx="28"></rect>
-        <rect class="a-fade" style="--d:1.55s" x="10" y="362" width="180" height="56" rx="28"></rect>
-        <rect class="a-fade" style="--d:1.8s" x="10" y="200" width="180" height="56" rx="28"></rect>
-      </g>
-      <g font-family="Castoro" font-size="24" fill="#2C4E25" text-anchor="middle">
-        <text class="a-fade" style="--d:.6s" x="320" y="98">Sleep</text>
-        <text class="a-fade" style="--d:.85s" x="535" y="236">Insulin resistance</text>
-        <text class="a-fade" style="--d:1.1s" x="535" y="398">Cortisol</text>
-        <text class="a-fade" style="--d:1.35s" x="320" y="536">Mood · Cognition</text>
-        <text class="a-fade" style="--d:1.6s" x="100" y="398">Estrogen</text>
-        <text class="a-fade" style="--d:1.85s" x="100" y="236">Melatonin</text>
-      </g>
-      <g font-family="Public Sans" font-size="17" font-weight="700" fill="#FFFCF7" text-anchor="middle">
-        <g class="a-pop" style="--d:2.3s"><circle cx="235" cy="62" r="17" fill="#C97A2B"></circle><text x="235" y="68">1</text></g>
-        <g class="a-pop" style="--d:2.38s"><circle cx="435" cy="200" r="17" fill="#C97A2B"></circle><text x="435" y="206">2</text></g>
-        <g class="a-pop" style="--d:2.46s"><circle cx="625" cy="362" r="17" fill="#C97A2B"></circle><text x="625" y="368">3</text></g>
-        <g class="a-pop" style="--d:2.54s"><circle cx="190" cy="200" r="17" fill="#C97A2B"></circle><text x="190" y="206">4</text></g>
-        <g class="a-pop" style="--d:2.62s"><circle cx="190" cy="362" r="17" fill="#C97A2B"></circle><text x="190" y="368">5</text></g>
-        <g class="a-pop" style="--d:2.7s"><circle cx="440" cy="500" r="17" fill="#C97A2B"></circle><text x="440" y="506">6</text></g>
-      </g>
-      <text class="a-fade" style="--d:2.5s" x="320" y="300" font-family="Castoro" font-style="italic" font-size="26" fill="#2C4E25" text-anchor="middle">one loop,</text>
-      <text class="a-fade" style="--d:2.6s" x="320" y="334" font-family="Castoro" font-style="italic" font-size="26" fill="#2C4E25" text-anchor="middle">six places to interrupt it</text>
-    </svg>
-
-    <div class="stag" style="--sd:.7s;display:grid;grid-template-rows:repeat(6,1fr);border:1px solid #2C4E25;border-radius:8px;overflow:hidden;background:#FFFFFF;">
-      <div style="display:grid;grid-template-columns:40px 230px 1fr;gap:20px;align-items:center;padding:0 30px;border-bottom:1px solid rgba(44,78,37,0.3);"><span style="width:34px;height:34px;border-radius:50%;background:#C97A2B;color:#FFFCF7;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;">1</span><div style="font-family:Castoro,serif;font-size:27px;color:#2C4E25;">Sleep</div><p style="margin:0;font-size:18px;line-height:1.4;color:#3d3d3a;">Daridorexant, lemborexant (Dayvigo), doxepin, glycine, ashwagandha, progesterone, lifestyle.</p></div>
-      <div style="display:grid;grid-template-columns:40px 230px 1fr;gap:20px;align-items:center;padding:0 30px;border-bottom:1px solid rgba(44,78,37,0.3);"><span style="width:34px;height:34px;border-radius:50%;background:#C97A2B;color:#FFFCF7;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;">2</span><div style="font-family:Castoro,serif;font-size:27px;color:#2C4E25;">Insulin resistance</div><p style="margin:0;font-size:18px;line-height:1.4;color:#3d3d3a;">Metformin, GLP-1 agonists.</p></div>
-      <div style="display:grid;grid-template-columns:40px 230px 1fr;gap:20px;align-items:center;padding:0 30px;border-bottom:1px solid rgba(44,78,37,0.3);"><span style="width:34px;height:34px;border-radius:50%;background:#C97A2B;color:#FFFCF7;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;">3</span><div style="font-family:Castoro,serif;font-size:27px;color:#2C4E25;">Cortisol</div><p style="margin:0;font-size:18px;line-height:1.4;color:#3d3d3a;">DHEA, omega-3, rhodiola, magnesium and B6, ashwagandha, circadian rhythm, exercise, lifestyle.</p></div>
-      <div style="display:grid;grid-template-columns:40px 230px 1fr;gap:20px;align-items:center;padding:0 30px;border-bottom:1px solid rgba(44,78,37,0.3);"><span style="width:34px;height:34px;border-radius:50%;background:#C97A2B;color:#FFFCF7;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;">4</span><div style="font-family:Castoro,serif;font-size:27px;color:#2C4E25;">Melatonin</div><p style="margin:0;font-size:18px;line-height:1.4;color:#3d3d3a;">Light exposure, tryptophan, B6, folate, magnesium, exercise, temperature.</p></div>
-      <div style="display:grid;grid-template-columns:40px 230px 1fr;gap:20px;align-items:center;padding:0 30px;border-bottom:1px solid rgba(44,78,37,0.3);"><span style="width:34px;height:34px;border-radius:50%;background:#C97A2B;color:#FFFCF7;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;">5</span><div style="font-family:Castoro,serif;font-size:27px;color:#2C4E25;">Estrogen</div><p style="margin:0;font-size:18px;line-height:1.4;color:#3d3d3a;">Progesterone.</p></div>
-      <div style="display:grid;grid-template-columns:40px 230px 1fr;gap:20px;align-items:center;padding:0 30px;"><span style="width:34px;height:34px;border-radius:50%;background:#C97A2B;color:#FFFCF7;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;">6</span><div style="font-family:Castoro,serif;font-size:27px;color:#2C4E25;">Mood, fatigue, cognition</div><p style="margin:0;font-size:18px;line-height:1.4;color:#3d3d3a;">SSRI (escitalopram), benzodiazepine (alprazolam), creatine 5 g/day.</p></div>
+  <section class="fig cycle" id="cycle" data-links aria-label="The hormone loop and its six stop points">
+    <div class="c-ring">
+      <div class="fig-head">
+        <span class="label">Fig. 06 · One loop, six stops</span>
+        <span class="hint"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 1.5"/></svg>Pick a stop to interrupt the loop</span>
+      </div>
+      <div class="fig-body">
+        <svg class="ring-svg" id="ring" viewBox="0 0 640 640" role="img" aria-label="A loop: sleep, insulin resistance, cortisol, mood and cognition, estrogen, melatonin, and back to sleep.">
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#2C4E25"/></marker></defs>
+          <circle class="fx-fade" style="--d:.2s" cx="320" cy="320" r="230" fill="none" stroke="#2C4E25" stroke-opacity=".16" stroke-width="1.5" stroke-dasharray="2 8"/>
+          <g fill="none" stroke="#2C4E25" stroke-width="2.2" marker-end="url(#ah)">
+            <path class="arc draw" data-a="0" pathLength="1" style="--d:.7s;--dur:.55s" d="M 394.9 102.5 A 230 230 0 0 1 490.9 166.1"/>
+            <path class="arc draw" data-a="1" pathLength="1" style="--d:1s;--dur:.55s" d="M 538.7 248.9 A 230 230 0 0 1 538.7 391.1"/>
+            <path class="arc draw" data-a="2" pathLength="1" style="--d:1.3s;--dur:.55s" d="M 490.9 473.9 A 230 230 0 0 1 431.5 521.2"/>
+            <path class="arc draw" data-a="3" pathLength="1" style="--d:1.6s;--dur:.55s" d="M 208.5 521.2 A 230 230 0 0 1 149.1 473.9"/>
+            <path class="arc draw" data-a="4" pathLength="1" style="--d:1.9s;--dur:.55s" d="M 101.3 391.1 A 230 230 0 0 1 101.3 248.9"/>
+            <path class="arc draw" data-a="5" pathLength="1" style="--d:2.2s;--dur:.55s" d="M 149.1 166.1 A 230 230 0 0 1 245.1 102.5"/>
+          </g>
+          <g id="pWrap" class="fx-fade" style="--d:2.4s">
+            <circle class="halo" id="halo" cx="550" cy="320" r="14" fill="#9B3B2E"/>
+            <circle id="glow" cx="550" cy="320" r="13" fill="#C97A2B" opacity=".22"/>
+            <circle class="particle" id="particle" cx="550" cy="320" r="7" fill="#C97A2B"/>
+          </g>
+          <g class="fx-fade" style="--d:2.4s" text-anchor="middle">
+            <text class="center-a" id="cA" x="320" y="306">one loop,</text>
+            <text class="center-a" id="cB" x="320" y="342">six places to interrupt it</text>
+          </g>
+          <g>
+            <g class="fx-pop" style="--d:.4s"><g class="stop-node lk-soft" data-t="s0" data-k="s0"><rect x="255" y="62" width="130" height="56" rx="28"/><text x="320" y="98" text-anchor="middle">Sleep</text></g></g>
+            <g class="fx-pop" style="--d:.7s"><g class="stop-node lk-soft" data-t="s1" data-k="s1"><rect x="416" y="177" width="206" height="56" rx="28"/><text x="519" y="213" text-anchor="middle">Insulin resistance</text></g></g>
+            <g class="fx-pop" style="--d:1s"><g class="stop-node lk-soft" data-t="s2" data-k="s2"><rect x="449" y="407" width="140" height="56" rx="28"/><text x="519" y="443" text-anchor="middle">Cortisol</text></g></g>
+            <g class="fx-pop" style="--d:1.3s"><g class="stop-node lk-soft" data-t="s3" data-k="s3"><rect x="218" y="522" width="204" height="56" rx="28"/><text x="320" y="558" text-anchor="middle">Mood · cognition</text></g></g>
+            <g class="fx-pop" style="--d:1.6s"><g class="stop-node lk-soft" data-t="s4" data-k="s4"><rect x="52" y="407" width="138" height="56" rx="28"/><text x="121" y="443" text-anchor="middle">Estrogen</text></g></g>
+            <g class="fx-pop" style="--d:1.9s"><g class="stop-node lk-soft" data-t="s5" data-k="s5"><rect x="48" y="177" width="146" height="56" rx="28"/><text x="121" y="213" text-anchor="middle">Melatonin</text></g></g>
+          </g>
+          <g font-family="Public Sans" font-size="16" font-weight="700" fill="#FFFCF7" text-anchor="middle" pointer-events="none">
+            <g class="fx-pop" style="--d:2.5s"><circle cx="257" cy="64" r="16" fill="#C97A2B"/><text x="257" y="70">1</text></g>
+            <g class="fx-pop" style="--d:2.58s"><circle cx="418" cy="179" r="16" fill="#C97A2B"/><text x="418" y="185">2</text></g>
+            <g class="fx-pop" style="--d:2.66s"><circle cx="587" cy="409" r="16" fill="#C97A2B"/><text x="587" y="415">3</text></g>
+            <g class="fx-pop" style="--d:2.74s"><circle cx="220" cy="524" r="16" fill="#C97A2B"/><text x="220" y="530">4</text></g>
+            <g class="fx-pop" style="--d:2.82s"><circle cx="54" cy="409" r="16" fill="#C97A2B"/><text x="54" y="415">5</text></g>
+            <g class="fx-pop" style="--d:2.9s"><circle cx="50" cy="179" r="16" fill="#C97A2B"/><text x="50" y="185">6</text></g>
+          </g>
+        </svg>
+      </div>
     </div>
-  </div>
 
-  <div class="a-fade" style="--d:2.4s;margin-top:30px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:28px;font-size:15px;color:#76736D;">
-    <div style="display:flex;gap:12px;">
-      <a class="pill" href="index.html" style="display:inline-flex;align-items:center;gap:10px;border:1px solid #2C4E25;border-radius:48px;padding:10px 20px 10px 16px;font-size:15px;font-weight:500;color:#2C4E25;text-decoration:none;background:#FFFCF7;">← All explainers</a>
-      <a class="pill" href="07-sleep-hormone-web.html" style="display:inline-flex;align-items:center;gap:10px;border:1px solid #2C4E25;border-radius:48px;padding:10px 16px 10px 20px;font-size:15px;font-weight:500;color:#2C4E25;text-decoration:none;background:#FFFCF7;">Next: Sleep, cortisol and the hormone web →</a>
+    <div class="c-list">
+      <div class="row lk-soft" data-t="s0" data-k="s0"><span class="nb">1</span><div class="row-title">Sleep</div><p>Daridorexant, lemborexant (Dayvigo), doxepin, glycine, ashwagandha, progesterone, lifestyle.</p></div>
+      <div class="row lk-soft" data-t="s1" data-k="s1"><span class="nb">2</span><div class="row-title">Insulin resistance</div><p>Metformin, GLP-1 agonists.</p></div>
+      <div class="row lk-soft" data-t="s2" data-k="s2"><span class="nb">3</span><div class="row-title">Cortisol</div><p>DHEA, omega-3, rhodiola, magnesium and B6, ashwagandha, circadian rhythm, exercise, lifestyle.</p></div>
+      <div class="row lk-soft" data-t="s3" data-k="s3"><span class="nb">4</span><div class="row-title">Mood, fatigue, cognition</div><p>SSRI (escitalopram), benzodiazepine (alprazolam), creatine 5 g/day.</p></div>
+      <div class="row lk-soft" data-t="s4" data-k="s4"><span class="nb">5</span><div class="row-title">Estrogen</div><p>Progesterone.</p></div>
+      <div class="row lk-soft" data-t="s5" data-k="s5"><span class="nb">6</span><div class="row-title">Melatonin</div><p>Light exposure, tryptophan, B6, folate, magnesium, exercise, temperature.</p></div>
+      <p class="caution"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.8v3.8M8 11.1v.1"/></svg>Medication names are for discussion with your provider, not a recommendation.</p>
     </div>
-    <span>Adapted from clinician notes. Medication names are for discussion with your provider, not a recommendation.</span>
-    <span>© Optimal</span>
-  </div>
-</div>
-</div></div>
-<script src="assets/fit.js"></script>
+  </section>
+</main>
+
+<div id="end"></div>
+<div id="foot"></div>
+<script src="assets/js/site.js"></script>
+<script>
+(function () {
+  var fig = document.getElementById('cycle');
+  var ring = document.getElementById('ring');
+  var CX = 320, CY = 320, R = 230;
+  var names = ['Sleep', 'Insulin resistance', 'Cortisol', 'Mood · cognition', 'Estrogen', 'Melatonin'];
+  var arriveAt = [251, 318, 18, 61, 138, 198];   // end of each node's incoming arc (deg, clockwise from +x)
+  var arcs = [].slice.call(ring.querySelectorAll('.arc'));
+  var P = ['particle', 'glow', 'halo'].map(function (id) { return document.getElementById(id); });
+  var a = 0, running = true, target = null, last = performance.now(), SPEED = 360 / 7200;
+
+  function draw() {
+    var r = a * Math.PI / 180, x = CX + R * Math.cos(r), y = CY + R * Math.sin(r);
+    P.forEach(function (c) { c.setAttribute('cx', x.toFixed(2)); c.setAttribute('cy', y.toFixed(2)); });
+  }
+  function frame(now) {
+    var dt = Math.min(64, now - last); last = now;
+    if (running && target === null) { a = (a + dt * SPEED) % 360; draw(); }
+    requestAnimationFrame(frame);
+  }
+  function halt(i) {
+    target = i;
+    var goal = arriveAt[i];
+    while (goal < a) goal += 360;
+    if (goal - a > 300) goal -= 360;
+    var from = a, dist = Math.abs(goal - from);
+    HX.tween(Math.max(450, Math.min(1400, dist * 6)), function (e) {
+      if (target !== i) return false;
+      a = from + (goal - from) * e; draw();
+    }).then(function () { if (target === i) ring.classList.add('halted'); });
+    arcs.forEach(function (el) { el.classList.toggle('cut', +el.getAttribute('data-a') !== (i + 5) % 6); });
+    document.getElementById('cA').textContent = 'interrupting the loop at';
+    var b = document.getElementById('cB'); b.textContent = names[i]; b.setAttribute('class', 'center-b');
+  }
+  function release() {
+    target = null; ring.classList.remove('halted');
+    a = ((a % 360) + 360) % 360;
+    arcs.forEach(function (el) { el.classList.remove('cut'); });
+    document.getElementById('cA').textContent = 'one loop,';
+    var b = document.getElementById('cB'); b.textContent = 'six places to interrupt it'; b.setAttribute('class', 'center-a');
+  }
+  fig.addEventListener('focuskey', function (e) {
+    var k = e.detail;
+    if (k) halt(+k.slice(1)); else release();
+  });
+  if (HX.reduce) { running = false; }
+  draw();
+  requestAnimationFrame(frame);
+})();
+</script>
 </body>
 </html>

@@ -4,100 +4,180 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Three ways to measure cortisol · Hormone Explainers</title>
-<meta name="description" content="Awakening response, diurnal slope and area under the curve — all read from one daily cortisol curve. Explainer 03 of 08.">
-<link rel="icon" href="assets/symbol-green.png">
+<meta name="description" content="Awakening response, diurnal slope and area under the curve, all read from one daily cortisol curve. Chapter 03 of 08.">
+<meta name="theme-color" content="#FFFCF7">
+<link rel="icon" href="assets/img/symbol-green.png">
+<script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css">
+<link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Public+Sans:ital,wght@0,300..700;1,400..500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
 <style>
-.pulse { transform-box: fill-box; transform-origin: center; animation: pulseDot 3s ease-in-out 3.4s infinite; }
-@keyframes pulseDot { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+.measure { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+.m-chart { border-right: 1px solid var(--line); min-width: 0; }
+.m-plot svg { width: 100%; height: auto; overflow: visible; }
+.m-axis { position: relative; height: 26px; margin-top: 10px; }
+.m-axis span { position: absolute; top: 0; transform: translateX(-50%); font-size: 11px; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
+.m-axis span:first-child { transform: none; }
+.m-axis span:last-child { transform: translateX(-100%); }
+.emph { opacity: 0; transition: opacity .35s var(--ease); }
+.emph.is-on { opacity: 1; }
+.badge-t { cursor: pointer; }
+.badge-t circle { transition: r .3s var(--spring); }
+.badge-t.is-on circle { r: 21px; }
+.ghost { transition: opacity .5s var(--ease); }
+.pattern-note { display: flex; align-items: center; gap: 10px; margin: 16px 2px 0; font-size: 14.5px; color: var(--ink-2); min-height: 1.5em; }
+.pattern-note .d { width: 9px; height: 9px; border-radius: 50%; background: var(--pc, var(--forest)); flex: none; transition: background .4s var(--ease); }
+
+.m-list { padding: 14px; display: grid; gap: 6px; align-content: start; }
+.m-list .row { grid-template-columns: 30px 1fr; }
+.m-list .row-title { margin: 3px 0 6px; }
+.status { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.status .chip { height: 28px; font-size: 12.5px; padding: 0 11px; }
+.status .ok { color: var(--forest); border-color: var(--line-2); }
+.status .bad { color: var(--brick); border-color: rgba(155, 59, 46, .28); }
+.status .chip.is-current.ok { background: var(--forest); color: var(--cream); border-color: transparent; }
+.status .chip.is-current.bad { background: var(--brick); color: var(--cream); border-color: transparent; }
+.status .chip:not(.is-current) { opacity: .7; }
+
+@media (max-width: 1000px) {
+  .measure { grid-template-columns: 1fr; }
+  .m-chart { border-right: 0; border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 640px) { .m-plot .svg-label { display: none; } .m-axis span { font-size: 9.5px; letter-spacing: .06em; } }
 </style>
 </head>
-<body data-prev="02-hpa-dysfunction.html" data-next="04-cortisol-partners.html">
-<div class="stage-wrap"><div class="stage">
-<div style="width:1920px;height:1080px;box-sizing:border-box;padding:76px 104px 60px;display:flex;flex-direction:column;font-family:'Public Sans',sans-serif;letter-spacing:-0.02em;background:#FFFCF7;position:relative;overflow:hidden;">
-  <div class="a-fade" style="--d:.15s;position:absolute;right:88px;top:-40px;font-family:Castoro,serif;font-size:420px;line-height:1;letter-spacing:-0.06em;color:rgba(44,78,37,0.05);pointer-events:none;">03</div>
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;position:relative;">
+<body data-chapter="3">
+<div id="nav" class="nav-wrap"></div>
+
+<main class="page">
+  <header class="chapter-head">
     <div>
-      <div class="a-rise" style="--d:.05s;font-size:14px;font-weight:500;letter-spacing:0.14em;color:#2C4E25;margin-bottom:22px;display:flex;align-items:center;gap:14px;"><span style="width:32px;height:1px;background:#2C4E25;display:inline-block;"></span>HORMONE EXPLAINERS · 03 OF 08</div>
-      <h1 class="a-rise" style="--d:.12s;font-family:Castoro,serif;font-weight:400;font-size:84px;line-height:0.98;letter-spacing:-0.045em;margin:0;color:#2C4E25;">Three ways to <span style="position:relative;display:inline-block;font-style:italic;">measure<span class="circ" style="--d:.9s;--rot:-3deg;position:absolute;left:-16px;right:-16px;top:-4px;bottom:-12px;border:1.5px solid rgba(26,80,18,0.5);border-radius:50%;transform:rotate(-3deg);"></span></span> cortisol</h1>
+      <p class="eyebrow reveal"><span class="dot"></span>Chapter 03 <span class="muted">/ 08 · Measurement</span></p>
+      <h1 class="display reveal" style="--i:1">Three ways to <em class="mark">measure</em> cortisol</h1>
     </div>
-    <img class="a-fade" style="--d:.5s;height:52px;width:auto;margin-top:2px;" src="assets/symbol-green.png" alt="Optimal">
-  </div>
-  <p class="a-rise" style="--d:.28s;font-size:26px;line-height:1.35;max-width:1080px;margin:26px 0 0;color:#3d3d3a;position:relative;">A single cortisol value says little. What matters is the shape of the daily curve: how sharply it rises on waking, how steadily it falls, and how much is produced in total. All three are read from the same curve.</p>
+    <p class="lede reveal" style="--i:2">A single cortisol value says little. What matters is the shape of the daily curve: how sharply it rises on waking, how steadily it falls, and how much is produced in total. All three are read from the same curve.</p>
+  </header>
 
-  <div style="flex:1;min-height:0;display:grid;grid-template-columns:1.25fr 1fr;gap:40px;margin-top:36px;position:relative;">
-    <div class="a-rise" style="--d:.45s;border:1px solid #2C4E25;border-radius:8px;background:#FFFFFF;padding:36px 40px 30px;display:flex;flex-direction:column;">
-      <div style="font-size:13px;letter-spacing:0.14em;color:#76736D;margin-bottom:auto;">ONE DAY OF SALIVARY CORTISOL</div>
-      <svg viewBox="0 0 900 420" style="width:100%;display:block;">
-        <defs><linearGradient id="auc" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#87A482" stop-opacity="0.45"></stop><stop offset="1" stop-color="#87A482" stop-opacity="0.05"></stop></linearGradient></defs>
-        <path class="a-fade" style="--d:2s" d="M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318 L 860 350 Z" fill="url(#auc)"></path>
-        <line class="a-fade" style="--d:.8s" x1="40" y1="20" x2="40" y2="350" stroke="#040504" stroke-width="1"></line>
-        <line class="a-fade" style="--d:.8s" x1="40" y1="350" x2="870" y2="350" stroke="#040504" stroke-width="1"></line>
-        <line class="a-fade" style="--d:2.2s" x1="170" y1="80" x2="860" y2="318" stroke="#2C4E25" stroke-width="2.5" stroke-dasharray="7 7"></line>
-        <path class="draw" pathLength="1" style="--d:1s;animation-duration:1.6s" d="M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318" fill="none" stroke="#C97A2B" stroke-width="6" stroke-linecap="round"></path>
-        <path class="a-fade" style="--d:2.35s" d="M 40 350 C 60 250, 100 200, 170 190" fill="none" stroke="#9B3B2E" stroke-width="3" stroke-dasharray="6 6"></path>
-        <rect class="a-fade" style="--d:1.4s" x="40" y="20" width="130" height="330" fill="#C97A2B" fill-opacity="0.08"></rect>
-        <g class="a-pop" style="--d:2.5s"><circle class="pulse" cx="170" cy="80" r="9" fill="#FFFFFF" stroke="#2C4E25" stroke-width="3"></circle></g>
-        <g class="a-pop" style="--d:2.6s"><circle cx="860" cy="318" r="9" fill="#FFFFFF" stroke="#2C4E25" stroke-width="3"></circle></g>
-        <g font-family="Public Sans" font-size="18" font-weight="700" fill="#FFFCF7" text-anchor="middle">
-          <g class="a-pop" style="--d:2.6s"><circle cx="105" cy="50" r="17" fill="#C97A2B"></circle><text x="105" y="56">1</text></g>
-          <g class="a-pop" style="--d:2.75s"><circle cx="520" cy="170" r="17" fill="#2C4E25"></circle><text x="520" y="176">2</text></g>
-          <g class="a-pop" style="--d:2.9s"><circle cx="420" cy="300" r="17" fill="#87A482"></circle><text x="420" y="306">3</text></g>
-        </g>
-        <text class="a-fade" style="--d:2.7s" x="190" y="72" font-family="Castoro" font-style="italic" font-size="20" fill="#2C4E25">peak (D)</text>
-        <text class="a-fade" style="--d:2.8s" x="850" y="300" font-family="Castoro" font-style="italic" font-size="20" fill="#2C4E25" text-anchor="end">night (N)</text>
-        <text class="a-fade" style="--d:2.9s" x="185" y="196" font-family="Castoro" font-style="italic" font-size="18" fill="#9B3B2E">blunted rise</text>
-        <g class="a-fade" style="--d:1s" font-family="Public Sans" font-size="13" fill="#76736D" letter-spacing="1.5">
-          <text x="40" y="380">WAKE</text>
-          <text x="170" y="380" text-anchor="middle">+30 MIN</text>
-          <text x="450" y="380" text-anchor="middle">MIDDAY</text>
-          <text x="870" y="380" text-anchor="end">BEDTIME</text>
-          <text x="30" y="30" text-anchor="end" transform="rotate(-90 30 30)">CORTISOL</text>
-        </g>
-      </svg>
-    </div>
-
-    <div style="display:grid;grid-template-rows:1fr 1fr 1fr;gap:16px;">
-      <div class="a-rise" style="--d:.6s;border:1px solid #2C4E25;border-radius:8px;padding:24px 28px;display:grid;grid-template-columns:44px 1fr;gap:18px;align-items:start;">
-        <span style="width:36px;height:36px;border-radius:50%;background:#C97A2B;color:#FFFCF7;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;margin-top:2px;">1</span>
-        <div>
-          <div style="font-family:Castoro,serif;font-size:30px;line-height:1;letter-spacing:-0.04em;color:#2C4E25;margin-bottom:8px;">Cortisol awakening response</div>
-          <p style="margin:0 0 12px;font-size:18px;line-height:1.4;color:#3d3d3a;">The steep climb in the first 30 minutes after waking. It shows how well the HPA axis can mobilise energy for the day.</p>
-          <div class="stag" style="--sd:1s;display:flex;gap:8px;flex-wrap:wrap;"><span style="border:1px solid #2C4E25;color:#2C4E25;border-radius:48px;padding:5px 14px;font-size:14px;font-weight:500;">Sharp rise · healthy</span><span style="border:1px solid #9B3B2E;color:#9B3B2E;border-radius:48px;padding:5px 14px;font-size:14px;font-weight:500;">Blunted · concerning</span></div>
+  <section class="fig measure" id="measure" data-links aria-label="Reading the daily cortisol curve">
+    <div class="m-chart">
+      <div class="fig-head">
+        <div class="fig-title"><span class="label">Fig. 03 · One day of salivary cortisol</span></div>
+        <div class="seg" role="group" aria-label="Curve pattern" data-keys>
+          <button type="button" data-p="healthy" aria-pressed="true"><span class="sw" style="background:#2C4E25"></span>Healthy</button>
+          <button type="button" data-p="flat" aria-pressed="false"><span class="sw" style="background:#9B3B2E"></span>Flattened</button>
         </div>
       </div>
-      <div class="a-rise" style="--d:.75s;border:1px solid #2C4E25;border-radius:8px;padding:24px 28px;display:grid;grid-template-columns:44px 1fr;gap:18px;align-items:start;">
-        <span style="width:36px;height:36px;border-radius:50%;background:#2C4E25;color:#FFFCF7;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;margin-top:2px;">2</span>
-        <div>
-          <div style="font-family:Castoro,serif;font-size:30px;line-height:1;letter-spacing:-0.04em;color:#2C4E25;margin-bottom:8px;">Diurnal slope</div>
-          <p style="margin:0 0 12px;font-size:18px;line-height:1.4;color:#3d3d3a;">The drop from the morning peak to the evening low (D − N). A steady decline lets you wind down and sleep.</p>
-          <div class="stag" style="--sd:1.15s;display:flex;gap:8px;flex-wrap:wrap;"><span style="border:1px solid #2C4E25;color:#2C4E25;border-radius:48px;padding:5px 14px;font-size:14px;font-weight:500;">Clear drop · healthy</span><span style="border:1px solid #9B3B2E;color:#9B3B2E;border-radius:48px;padding:5px 14px;font-size:14px;font-weight:500;">Flat · concerning</span></div>
+      <div class="fig-body">
+        <div class="plot m-plot">
+          <svg viewBox="0 0 900 380" role="img" aria-label="Daily salivary cortisol curve with the awakening response, diurnal slope and area under the curve marked.">
+            <defs>
+              <linearGradient id="auc" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#87A482" stop-opacity=".5"/><stop offset="1" stop-color="#87A482" stop-opacity=".06"/></linearGradient>
+            </defs>
+            <g class="lk" data-k="car"><rect x="40" y="20" width="130" height="330" fill="#C97A2B" opacity=".09"/></g>
+            <g class="fx-fade" style="--d:1.3s"><path class="lk" data-k="auc" id="aucFill" fill="url(#auc)" d="M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318 L 860 350 Z"/></g>
+            <line x1="40" y1="16" x2="40" y2="350" stroke="#17200F" stroke-opacity=".5"/>
+            <line x1="40" y1="350" x2="870" y2="350" stroke="#17200F" stroke-opacity=".5"/>
+            <text x="28" y="22" transform="rotate(-90 28 22)" text-anchor="end" font-family="Public Sans" font-size="12" font-weight="600" letter-spacing="1.6" fill="#75786E">CORTISOL</text>
+            <path class="ghost" id="ghost" d="M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318" fill="none" stroke="#C97A2B" stroke-opacity=".55" stroke-width="2.5" stroke-dasharray="4 7" opacity="0"/>
+            <g class="fx-fade" style="--d:1.6s"><line class="lk" data-k="slope" id="slope" x1="170" y1="80" x2="860" y2="318" stroke="#2C4E25" stroke-width="2.5" stroke-dasharray="8 7"/></g>
+            <path class="draw" id="curve" pathLength="1" style="--d:.35s;--dur:1.5s" d="M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318" fill="none" stroke="#C97A2B" stroke-width="6" stroke-linecap="round"/>
+            <path class="emph" data-k="car" id="rise" d="M 40 350 C 70 160, 110 80, 170 80" fill="none" stroke="#A8601C" stroke-width="10" stroke-linecap="round"/>
+            <g class="fx-fade" style="--d:1.8s">
+              <g class="lk" data-k="slope">
+                <circle id="dPt" cx="170" cy="80" r="9" fill="#FFFEFB" stroke="#2C4E25" stroke-width="3.5"/>
+                <circle id="nPt" cx="860" cy="318" r="9" fill="#FFFEFB" stroke="#2C4E25" stroke-width="3.5"/>
+                <text class="svg-label" id="dLab" x="188" y="66" font-family="Castoro" font-style="italic" font-size="22" fill="#2C4E25">peak (D)</text>
+                <text class="svg-label" id="nLab" x="848" y="342" font-family="Castoro" font-style="italic" font-size="22" fill="#2C4E25" text-anchor="end">night (N)</text>
+              </g>
+            </g>
+            <g font-family="Public Sans" font-size="17" font-weight="700" fill="#FFFCF7" text-anchor="middle">
+              <g class="fx-pop" style="--d:2.1s"><g class="badge-t lk" data-t="car" data-k="car"><circle cx="105" cy="48" r="17" fill="#C97A2B"/><text x="105" y="54">1</text></g></g>
+              <g class="fx-pop" style="--d:2.25s"><g class="badge-t lk" data-t="slope" data-k="slope" id="b2"><circle cx="515" cy="172" r="17" fill="#2C4E25"/><text x="515" y="178">2</text></g></g>
+              <g class="fx-pop" style="--d:2.4s"><g class="badge-t lk" data-t="auc" data-k="auc"><circle cx="420" cy="302" r="17" fill="#6F9068"/><text x="420" y="308">3</text></g></g>
+            </g>
+          </svg>
         </div>
-      </div>
-      <div class="a-rise" style="--d:.9s;border:1px solid #2C4E25;border-radius:8px;padding:24px 28px;display:grid;grid-template-columns:44px 1fr;gap:18px;align-items:start;">
-        <span style="width:36px;height:36px;border-radius:50%;background:#87A482;color:#040504;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;margin-top:2px;">3</span>
-        <div>
-          <div style="font-family:Castoro,serif;font-size:30px;line-height:1;letter-spacing:-0.04em;color:#2C4E25;margin-bottom:8px;">Area under the curve</div>
-          <p style="margin:0 0 12px;font-size:18px;line-height:1.4;color:#3d3d3a;">The whole shaded area: how much cortisol the body makes across the day. Too much or too little both matter.</p>
-          <div class="stag" style="--sd:1.3s;display:flex;gap:8px;flex-wrap:wrap;"><span style="border:1px solid #2C4E25;color:#2C4E25;border-radius:48px;padding:5px 14px;font-size:14px;font-weight:500;">Mid range · healthy</span><span style="border:1px solid #9B3B2E;color:#9B3B2E;border-radius:48px;padding:5px 14px;font-size:14px;font-weight:500;">Very high or low · concerning</span></div>
-        </div>
+        <div class="m-axis" aria-hidden="true"><span style="left:4.44%">Wake</span><span style="left:18.9%">+30 min</span><span style="left:50%">Midday</span><span style="left:95.6%">Bedtime</span></div>
+        <p class="pattern-note" id="pNote"><span class="d"></span><span id="pText">Healthy pattern: a sharp rise, a clear drop and a mid-range total.</span></p>
       </div>
     </div>
-  </div>
 
-  <div class="a-fade" style="--d:2.2s;margin-top:30px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:28px;font-size:15px;color:#76736D;">
-    <div style="display:flex;gap:12px;">
-      <a class="pill" href="index.html" style="display:inline-flex;align-items:center;gap:10px;border:1px solid #2C4E25;border-radius:48px;padding:10px 20px 10px 16px;font-size:15px;font-weight:500;color:#2C4E25;text-decoration:none;background:#FFFCF7;">← All explainers</a>
-      <a class="pill" href="04-cortisol-partners.html" style="display:inline-flex;align-items:center;gap:10px;border:1px solid #2C4E25;border-radius:48px;padding:10px 16px 10px 20px;font-size:15px;font-weight:500;color:#2C4E25;text-decoration:none;background:#FFFCF7;">Next: Cortisol's partners →</a>
+    <div class="m-list">
+      <div class="row lk-soft" data-t="car" data-k="car">
+        <span class="nb" style="background:#C97A2B">1</span>
+        <div>
+          <div class="row-title">Cortisol awakening response</div>
+          <p>The steep climb in the first 30 minutes after waking. It shows how well the HPA axis can mobilise energy for the day.</p>
+          <div class="status"><span class="chip ok is-current">Sharp rise · healthy</span><span class="chip bad">Blunted · concerning</span></div>
+        </div>
+      </div>
+      <div class="row lk-soft" data-t="slope" data-k="slope">
+        <span class="nb" style="background:#2C4E25">2</span>
+        <div>
+          <div class="row-title">Diurnal slope</div>
+          <p>The drop from the morning peak to the evening low (D&nbsp;−&nbsp;N). A steady decline lets you wind down and sleep.</p>
+          <div class="status"><span class="chip ok is-current">Clear drop · healthy</span><span class="chip bad">Flat · concerning</span></div>
+        </div>
+      </div>
+      <div class="row lk-soft" data-t="auc" data-k="auc">
+        <span class="nb" style="background:#6F9068">3</span>
+        <div>
+          <div class="row-title">Area under the curve</div>
+          <p>The whole shaded area: how much cortisol the body makes across the day. Too much or too little both matter.</p>
+          <div class="status"><span class="chip ok is-current">Mid range · healthy</span><span class="chip bad">Very high or low · concerning</span></div>
+        </div>
+      </div>
     </div>
-    <span>Adapted from clinician notes. For education only, not a substitute for individual medical advice.</span>
-    <span>© Optimal</span>
-  </div>
-</div>
-</div></div>
-<script src="assets/fit.js"></script>
+  </section>
+</main>
+
+<div id="end"></div>
+<div id="foot"></div>
+<script src="assets/js/site.js"></script>
+<script>
+(function () {
+  var P = {
+    healthy: { curve: 'M 40 350 C 70 160, 110 80, 170 80 C 380 90, 620 280, 860 318', rise: 'M 40 350 C 70 160, 110 80, 170 80',
+               d: [170, 80], n: [860, 318], b2: [515, 172], color: '#2C4E25',
+               note: 'Healthy pattern: a sharp rise, a clear drop and a mid-range total.' },
+    flat:    { curve: 'M 40 350 C 60 250, 100 200, 170 190 C 380 196, 620 244, 860 266', rise: 'M 40 350 C 60 250, 100 200, 170 190',
+               d: [170, 190], n: [860, 266], b2: [515, 205], color: '#9B3B2E',
+               note: 'Flattened pattern: a blunted rise, little drop across the day and a low total.' }
+  };
+  var $ = function (id) { return document.getElementById(id); };
+  var fig = $('measure'), curve = $('curve');
+  var state = 'healthy', pos = { d: P.healthy.d.slice(), n: P.healthy.n.slice(), b2: P.healthy.b2.slice() };
+
+  function setPattern(k) {
+    if (k === state) return;
+    state = k;
+    var S = P[k];
+    curve.classList.remove('draw'); curve.style.strokeDasharray = 'none';
+    HX.morph(curve, S.curve, 1000);
+    HX.morph($('rise'), S.rise, 1000);
+    HX.morph($('aucFill'), S.curve + ' L 860 350 Z', 1000);
+    $('ghost').setAttribute('opacity', k === 'flat' ? '1' : '0');
+    var from = JSON.parse(JSON.stringify(pos));
+    HX.tween(1000, function (e) {
+      ['d', 'n', 'b2'].forEach(function (key) { pos[key] = [from[key][0] + (S[key][0] - from[key][0]) * e, from[key][1] + (S[key][1] - from[key][1]) * e]; });
+      $('dPt').setAttribute('cy', pos.d[1]); $('nPt').setAttribute('cy', pos.n[1]);
+      $('dLab').setAttribute('y', pos.d[1] - 14); $('nLab').setAttribute('y', pos.n[1] + 24);
+      $('slope').setAttribute('y1', pos.d[1]); $('slope').setAttribute('y2', pos.n[1]);
+      var b = $('b2'); b.querySelector('circle').setAttribute('cy', pos.b2[1]); b.querySelector('text').setAttribute('y', pos.b2[1] + 6);
+    });
+    document.querySelectorAll('.status').forEach(function (s) {
+      s.querySelector('.ok').classList.toggle('is-current', k === 'healthy');
+      s.querySelector('.bad').classList.toggle('is-current', k === 'flat');
+    });
+    fig.style.setProperty('--pc', S.color);
+    $('pText').textContent = S.note;
+    document.querySelectorAll('.seg button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-p') === k); });
+  }
+  document.querySelectorAll('.seg button').forEach(function (b) {
+    b.addEventListener('click', function (e) { e.stopPropagation(); setPattern(b.getAttribute('data-p')); });
+  });
+})();
+</script>
 </body>
 </html>
