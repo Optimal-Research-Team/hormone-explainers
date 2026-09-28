@@ -108,7 +108,7 @@
       var dio = new IntersectionObserver(function (es) {
         es.forEach(function (e) { if (e.isIntersecting) hits.add(e.target); else hits.delete(e.target); });
         navMount.classList.toggle('on-dark', hits.size > 0);
-      }, { rootMargin: '0px 0px -' + Math.max(0, window.innerHeight - 40) + 'px 0px' });
+      }, { rootMargin: '0px 0px -95% 0px' });
       darks.forEach(function (d) { dio.observe(d); });
       navMount.classList.add('on-dark');
     }
@@ -451,14 +451,15 @@
     }
     root.querySelectorAll('[data-begin]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); request(0); }); });
 
-    /* the cover photograph holds the right-hand panel until the story starts */
+    /* the cover photograph holds the right-hand panel until the header's foot rises past 62% of the
+       viewport, so the diagram is in place before step 1 reaches the reading line */
     var stageEl = root.querySelector('.stage'), headEl = root.querySelector('.chapter-head');
     function setHead(on) {
       root.classList.toggle('at-head', on);
       if (!on && stageEl) markIn(stageEl);
     }
     if (headEl && 'IntersectionObserver' in window) {
-      new IntersectionObserver(function (es) { if (mode === 'scroll') setHead(es[0].isIntersecting); }, { rootMargin: '0px 0px -52% 0px', threshold: 0 }).observe(headEl);
+      new IntersectionObserver(function (es) { if (mode === 'scroll') setHead(es[0].isIntersecting); }, { rootMargin: '-62% 0px 0px 0px', threshold: 0 }).observe(headEl);
     } else setHead(false);
 
     /* "up next" cue on the last step (Present mode) */
@@ -504,10 +505,33 @@
       }
       window.scrollTo({ top: y, behavior: instant || reduce ? 'auto' : 'smooth' });
     }
+    /* while a requested scroll is travelling, steps passing the trigger line must not take over */
+    var locked = false, lockTimer = null;
+    function unlock() {
+      if (!locked) return;
+      locked = false; clearTimeout(lockTimer);
+      window.removeEventListener('scrollend', unlock);
+      sync();
+    }
+    function lockScroll() {
+      locked = true; clearTimeout(lockTimer);
+      if ('onscrollend' in window) window.addEventListener('scrollend', unlock);
+      lockTimer = setTimeout(unlock, 1800);
+    }
+    function lineY() {
+      if (!mobile()) return window.innerHeight * 0.5;
+      var col = root.querySelector('.stage-col');
+      return Math.min(window.innerHeight * 0.92, parseFloat(getComputedStyle(col).top) + col.offsetHeight + 60);
+    }
+    function sync() {
+      if (mode !== 'scroll') return;
+      var y = lineY();
+      for (var k = 0; k < n; k++) { var r = steps[k].getBoundingClientRect(); if (r.top <= y && r.bottom >= y) { go(k); return; } }
+    }
     function request(i) {
       if (mode === 'present') { presentGo(i); return; }
       i = Math.max(0, Math.min(n - 1, i));
-      go(i); scrollToStep(i);
+      go(i); lockScroll(); scrollToStep(i);
     }
     function mobile() { return window.matchMedia('(max-width: 1000px)').matches; }
     function observe() {
@@ -519,7 +543,7 @@
         m = '-' + Math.round(line * 100) + '% 0px -' + (99 - Math.round(line * 100)) + '% 0px';
       }
       io = new IntersectionObserver(function (entries) {
-        if (mode !== 'scroll') return;
+        if (mode !== 'scroll' || locked) return;
         entries.forEach(function (e) { if (e.isIntersecting) go(steps.indexOf(e.target)); });
       }, { rootMargin: m, threshold: 0 });
       steps.forEach(function (s) { io.observe(s); });
@@ -590,7 +614,7 @@
       var u = new URL(window.location.href); u.searchParams.delete('present'); history.replaceState(null, '', u.toString());
       if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(function () {});
       window.dispatchEvent(new Event('resize'));
-      requestAnimationFrame(function () { scrollToStep(idx, true); });
+      requestAnimationFrame(function () { lockScroll(); scrollToStep(idx, true); });
     }
     window.addEventListener('keydown', onPresentKey);
     document.querySelectorAll('[data-present]').forEach(function (b) { b.addEventListener('click', function () { enterPresent(Math.max(0, idx)); }); });
@@ -606,7 +630,7 @@
       enterPresent(pvp === 'last' ? n - 1 : Math.max(0, startAt));
     } else {
       go(Math.max(0, startAt));
-      if (params.has('step')) requestAnimationFrame(function () { scrollToStep(startAt, true); });
+      if (params.has('step')) requestAnimationFrame(function () { lockScroll(); scrollToStep(startAt, true); });
     }
     progress();
     storyApi = { go: request, get index() { return idx; }, get mode() { return mode; }, present: enterPresent, exit: exitPresent, count: n };
